@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<RadInstrumentData>
+  <RadInstrumentInformation id="RadInstrumentInformation-1">
+    <RadInstrumentManufacturerName>CAEN</RadInstrumentManufacturerName>
+    <RadInstrumentModelName>3-13-21198</RadInstrumentModelName>
+    <RadInstrumentClassCode>Spectroscopic Personal Radiation Detector</RadInstrumentClassCode>
+    <RadInstrumentVersion>
+      <RadInstrumentComponentName>RocFirmware</RadInstrumentComponentName>
+      <RadInstrumentComponentVersion>4.25</RadInstrumentComponentVersion>
+    </RadInstrumentVersion>
+    <RadInstrumentVersion>
+      <RadInstrumentComponentName>AmcFirmware</RadInstrumentComponentName>
+      <RadInstrumentComponentVersion>128.76</RadInstrumentComponentVersion>
+    </RadInstrumentVersion>
+    <RadInstrumentVersion>
+      <RadInstrumentComponentName>Software</RadInstrumentComponentName>
+      <RadInstrumentComponentVersion>v2.0.1</RadInstrumentComponentVersion>
+    </RadInstrumentVersion>
+  </RadInstrumentInformation>
+  <RadDetectorInformation id="RadDetectorInformation-1">
+    <RadDetectorCategoryCode>Gamma</RadDetectorCategoryCode>
+    <RadDetectorKindCode>Other</RadDetectorKindCode>
+  </RadDetectorInformation>
+  <EnergyCalibration id="EnergyCalibration-1">
+    <CoefficientValues>0 1 0</CoefficientValues>
+  </EnergyCalibration>
+  <RadMeasurement id="RadMeasurement-1">
+    <MeasurementClassCode>Foreground</MeasurementClassCode>
+    <StartDateTime>2023-12-05T16:19:11+00:00</StartDateTime>
+    <RealTimeDuration>PT0H16M0.470S</RealTimeDuration>
+    <Spectrum id="RadMeasurement-1_Spectrum-1" radDetectorInformationReference="RadDetectorInformation-1" energyCalibrationReference="EnergyCalibration-1">
+      <LiveTimeDuration>PT0H1M57.759S</LiveTimeDuration>
+      <ChannelData compressionCode="None">
+3.51212e+07 8.21586e+06 8.13949e+06 8.02034e+06 7.84676e+06 7.47982e+06 6.83349e+06 5.85499e+06 4.64171e+06 3.4338e+06 2.40527e+06 1.59449e+06 1.03096e+06 663565 417169 242675 
+129215 69832 43825 33340 27573 25282 23056 21686 20076 18972 17868 16935 15942 15205 15109 13832 
+13245 12590 11995 11520 10566 9996 9898 9479 8558 9215 8005 7889 7552 7548 7247 7167 
+6795 6783 6458 5727 6063 5557 5639 5216 5148 4725 4711 4620 4253 4124 3901 3813 
+3640 3534 3551 3367 3356 3358 3214 2650 2722 2679 2726 2455 2519 2573 2379 2012 
+2372 1953 2006 1789 2012 1651 1709 1669 1612 1587 1404 1366 1383 1431 1608 1275 
+1205 1235 1123 1271 1227 1064 1048 806 1111 1066 989 855 771 903 830 629 
+704 775 704 757 623 776 537 633 693 597 471 445 520 368 526 495 
+458 471 463 377 413 513 402 381 401 419 280 409 322 305 422 214 
+256 256 229 187 251 227 237 159 253 258 148 221 192 177 106 104 
+160 98 173 145 228 148 133 231 147 81 124 107 156 190 137 78 
+54 94 87 79 105 49 126 51 37 53 61 31 121 71 85 62 
+26 25 16 127 9 21 61 32 54 36 16 17 17 8 19 47 
+7 27 22 23 12 110 5 5 23 44 4 6 9 31 2 29 
+1 8 5 9 2 37 16 6 10 4 5 1 1 1 5 0 
+0 0 0 3 3 0 4 1 0 8 0 0 0 15 3 1 
+1 0 0 2 0 1 0 8 0 0 1 0 36 0 2 0 
+0 0 0 0 1 1 0 2 2 0 2 1 1 1 1 1 
+1 1 1 16 0 1 1 0 0 3 0 1 1 2 8 0 
+1 0 0 1 1 0 1 0 0 0 0 2 1 2 0 19 
+1 0 1 2 2 2 0 1 4 1 1 0 0 4 2 2 
+0 1 3 1 1 1 2 3 0 6 2 2 1 4 0 0 
+2 3 1 1 0 1 0 0 1 2 1 1 3 0 2 1 
+0 1 0 2 2 10 2 2 0 3 2 1 1 1 17 2 
+0 3 3 0 3 2 0 3 1 1 0 0 1 1 1 1 
+0 1 1 1 1 4 1 1 1 5 2 0 0 1 1 1 
+1 14 3 4 0 0 3 1 0 3 2 2 4 1 0 2 
+4 4 0 0 0 2 0 2 2 2 2 0 2 0 1 3 
+0 4 1 26 1 2 1 3 1 0 3 3 1 0 2 1 
+1 1 3 0 1 0 2 1 0 1 1 1 1 0 0 2 
+0 1 0 0 1 1 1 2 1 2 0 1 9 0 1 1 
+3 2 0 4 2 0 1 3 0 3 2 5 0 0 0 1 
+0 0 0 0 0 2 0 0 2 3 1 1 1 2 2 0 
+0 2 2 1 1 1 1 1 2 2 1 0 1 1 4 1 
+2 4 1 2 0 1 0 2 0 3 0 3 3 3 2 1 
+0 0 0 2 1 0 1 1 1 0 1 1 9 0 0 1 
+1 1 1 1 0 50 1 0 0 0 1 2 0 1 0 5 
+1 15 0 2 9 3 1 11 36 2 0 0 12 15 32 1 
+1 3 4 3 2 1 6 2 3 3 2 1 4 0 0 2 
+2 0 1 2 26 3 4 8 0 4 1 2 0 0 0 2 
+0 5 2 1 7 3 24 1 53 12 23 15 38 78 174 101 
+89 274 341 256 295 300 378 306 408 476 397 302 255 256 208 408 
+273 211 190 136 26 35 46 3 1 3 6 5 25 3 12 1 
+10 31 10 18 19 80 49 24 85 56 237 125 85 173 290 274 
+505 522 322 393 343 364 345 253 339 198 237 148 157 115 129 54 
+17 21 21 5 4 7 4 0 15 0 5 10 22 17 23 33 
+138 89 110 170 113 215 232 176 431 449 376 336 442 310 300 307 
+330 278 222 345 234 137 172 144 56 37 3 2 4 0 6 0 
+0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 
+0 0 2 0 0 0 0 1 2 0 0 0 0 1 1 1 
+1 1 0 0 0 0 2 2 1 2 2 0 3 2 1 3 
+3 3 2 2 1 3 6 3 7 4 5 3 6 3 8 4 
+9 6 6 8 9 8 8 10 9 12 12 12 17 12 10 15 
+11 19 22 22 16 21 22 13 27 27 24 28 25 26 35 38 
+37 33 44 36 48 31 43 52 67 62 61 67 71 69 70 75 
+89 76 89 92 101 100 94 104 117 110 105 122 132 128 142 117 
+133 154 172 190 167 165 165 222 173 202 211 232 208 246 223 236 
+239 277 261 283 296 307 331 321 314 298 351 376 398 363 395 406 
+445 405 472 523 468 514 515 504 578 580 596 621 608 674 663 716 
+752 790 836 862 883 861 963 932 988 1044 1072 1081 1139 1239 1266 1232 
+1317 1366 1390 1394 1488 1546 1693 1626 1718 1793 1898 1916 2037 2139 2181 2339 
+2430 2460 2462 2649 2784 2885 3052 3171 3371 3389 3550 3827 3904 4144 4285 4573 
+4619 4957 5297 5621 5855 6181 6661 6779 7493 7773 8267 8924 9689 10691 12402 16337 
+24728 43719 84204 161409 279631 435586 632266 852992 1.08221e+06 1.33802e+06 1.65492e+06 2.0249e+06 2.42552e+06 2.81142e+06 3.15412e+06 0
+</ChannelData>
+    </Spectrum>
+    <GrossCounts id="GrossCounts-1" radDetectorInformationReference="RadDetectorInformation-1" energyWindowsReference="EnergyWindows-1">
+      <LiveTimeDuration>PT0H1M57.759S</LiveTimeDuration>
+      <CountData/>
+    </GrossCounts>
+  </RadMeasurement>
+  <EnergyWindows id="EnergyWindows-1">
+    <WindowStartEnergyValues units="keV"/>
+    <WindowEndEnergyValues units="keV"/>
+  </EnergyWindows>
+  <AnalysisResults radMeasurementReferences="RadMeasurement-1">
+    <SpectrumPeakAnalysisResults/>
+  </AnalysisResults>
+</RadInstrumentData>
