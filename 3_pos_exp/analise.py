@@ -72,16 +72,15 @@ TT18_Chn1 = reader("../2_exp/TT_18/UNFILTERED/CH1@N6781_21198_Espectrum_TT_18_20
 TT18_Chn2 = reader("../2_exp/TT_18/UNFILTERED/CH2@N6781_21198_Espectrum_TT_18_20231205_184721.n42", 2)
 
 ######################### PLOT DATA ####################################
-plotter_3(TT4_Chn0, TT4_Chn1, TT4_Chn2, "TT4")
-plotter_3(TT5_Chn0, TT5_Chn1, TT5_Chn2, "TT5")
-plotter_3(TT7_Chn0, TT7_Chn1, TT7_Chn2, "TT7")
-plotter_3(TT8_Chn0, TT8_Chn1, TT8_Chn2, "TT8")
-plotter_3(TT9_Chn0, TT9_Chn1, TT9_Chn2, "TT9")
-plotter_3(TT10_Chn0, TT10_Chn1, TT10_Chn2, "TT10")
-plotter_3(TT11_Chn0, TT11_Chn1, TT11_Chn2, "TT11")
-plotter_3(TT12_Chn0, TT12_Chn1, TT12_Chn2, "TT12")
-plotter_3(TT13_Chn0, TT13_Chn1, TT13_Chn2, "TT13")
-plotter_3(TT14_Chn0, TT14_Chn1, TT14_Chn2, "TT14")
-plotter_3(TT15_Chn0, TT15_Chn1, TT15_Chn2, "TT15")
-plotter_3(TT16_Chn0, TT16_Chn1, TT16_Chn2, "TT16")
-plotter_3(TT18_Chn0, TT18_Chn1, TT18_Chn2, "TT18")
+TTs_Chn0 = [TT4_Chn0, TT5_Chn0, TT7_Chn0, TT8_Chn0, TT9_Chn0, TT10_Chn0, TT11_Chn0, TT12_Chn0, TT13_Chn0, TT14_Chn0, TT15_Chn0, TT16_Chn0, TT18_Chn0]
+TTs_Chn1 = [TT4_Chn1, TT5_Chn1, TT7_Chn1, TT8_Chn1, TT9_Chn1, TT10_Chn1, TT11_Chn1, TT12_Chn1, TT13_Chn1, TT14_Chn1, TT15_Chn1, TT16_Chn1, TT18_Chn1]
+TTs_Chn2 = [TT4_Chn2, TT5_Chn2, TT7_Chn2, TT8_Chn2, TT9_Chn2, TT10_Chn2, TT11_Chn2, TT12_Chn2, TT13_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2, TT18_Chn2]
+TTs_names = ["TT4", "TT5", "TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", "TT14", "TT15", "TT16", "TT18"]
+
+for i in range(len(TTs_Chn0)):
+    plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])   
+
+
+######################## Calibration 1 #################################
+
+######################## Calibration 2 #################################
