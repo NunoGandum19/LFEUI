@@ -22,6 +22,15 @@ def plotter (data, title = "Spectrum Data"):
     plt.show()
     
 
-
+def plotter_3(data1, data2, data3, title = "Spectrum Data"):
+    plt.plot(data1, label = "Ch0")
+    plt.plot(data2, label = "Ch1")
+    plt.plot(data3, label = "Ch2")
+    plt.yscale("log")  # Set y-axis to logarithmic scale
+    plt.xlabel("Channel")
+    plt.ylabel("Counts (log scale)")
+    plt.title(title)
+    plt.legend()
+    plt.show()
 
 
