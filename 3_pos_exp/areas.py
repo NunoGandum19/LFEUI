@@ -71,56 +71,56 @@ TT18_Chn0 = reader("../2_exp/TT_18/UNFILTERED/CH0@N6781_21198_Espectrum_TT_18_20
 TT18_Chn1 = reader("../2_exp/TT_18/UNFILTERED/CH1@N6781_21198_Espectrum_TT_18_20231205_184721.n42", 1)
 TT18_Chn2 = reader("../2_exp/TT_18/UNFILTERED/CH2@N6781_21198_Espectrum_TT_18_20231205_184721.n42", 2)
 
+
+######################### DEF AQUISITION TIMES ####################################
+time_TTS = [1.58,0.81667,0.61667,0.25,5.61667,19.1,0.9667,4.0833,4.5333,4.18333]
+time_TTS = [x*60 for x in time_TTS] #in seconds
+
+######################### DEF THRESHOLDS ####################################
+
+threshold = []
+
 ######################### PLOT DATA ####################################
 TTs_Chn0 = [TT7_Chn0, TT8_Chn0, TT9_Chn0, TT10_Chn0, TT11_Chn0, TT12_Chn0, TT13_Chn0, TT14_Chn0, TT15_Chn0, TT16_Chn0]
 TTs_Chn1 = [TT7_Chn1, TT8_Chn1, TT9_Chn1, TT10_Chn1, TT11_Chn1, TT12_Chn1, TT13_Chn1, TT14_Chn1, TT15_Chn1, TT16_Chn1]
 TTs_Chn2 = [TT7_Chn2, TT8_Chn2, TT9_Chn2, TT10_Chn2, TT11_Chn2, TT12_Chn2, TT13_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2]
 TTs_names = ["TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", "TT14", "TT15", "TT16"]
 
-def sum_chn0 (TTs_Chn0, threshold: list, times: list):
-    for i in range(len(TTs_Chn0)):
-        plotter(TTs_Chn0[i], TTs_names[i])
-    
-        counts_chn0 = 0
-        list_chn0 = []
-        
-        for j in range(threshold[i], len(TTs_Chn0[i])):
-            counts_chn0 += TTs_Chn0[i][j]
-            counts_chn0 = counts_chn0 / times[i]
-    
-        list_chn0.append(counts_chn0)
-    
-    return list_chn0
 
-def sum_chn1 (TTs_Chn1, threshold: list, times: list):
-    for i in range(len(TTs_Chn1)):
-        plotter(TTs_Chn1[i], TTs_names[i])
-    
-        counts_chn1 = 0
-        list_chn1 = []
-        
-        for j in range(threshold[i], len(TTs_Chn1[i])):
-            counts_chn1 += TTs_Chn1[i][j]
-            counts_chn1 = counts_chn1 / times[i]
-    
-        list_chn1.append(counts_chn1)
-    
-    return list_chn1
+######################### CUT INITIAL NOISE ####################################
+TTs_Chn0 = [x[20:] for x in TTs_Chn0]
+TTs_Chn1 = [x[20:] for x in TTs_Chn1]
+TTs_Chn2 = [x[20:] for x in TTs_Chn2]
 
-def sum_chn2 (TTs_Chn2, threshold: list, times: list):
-    for i in range(len(TTs_Chn2)):
-        plotter(TTs_Chn2[i], TTs_names[i])
-    
-        counts_chn2 = 0
-        list_chn2 = []
-        
-        for j in range(threshold[i], len(TTs_Chn2[i])):
-            counts_chn2 += TTs_Chn2[i][j]
-            counts_chn2 = counts_chn2 / times[i]
-    
-        list_chn2.append(counts_chn2)
-    
-    return list_chn2
+######################### TRANSFORM IN NP ARRAYS ####################################
+TTs_Chn0 = [np.array(x) for x in TTs_Chn0]
+TTs_Chn1 = [np.array(x) for x in TTs_Chn1]
+TTs_Chn2 = [np.array(x) for x in TTs_Chn2]
+
+# def sum_chn (TTs_Chn, threshold: list, times: list):
+#     for i in range(len(TTs_Chn)):
+#         plotter(TTs_Chn[i], TTs_names[i])
+#         counts_chn = 0
+#         list_chn = []
+#         for j in range(threshold[i], len(TTs_Chn0[i])):
+#             counts_chn += TTs_Chn0[i][j]
+#             counts_chn = counts_chn / times[i]
+#         print('sai')
+#         list_chn.append(counts_chn)
+#     return list_chn
+
+######################### CALCULATE INTEGRAL ####################################
+list_chn0 = [np.sum(x) / time_TTS[i] for i, x in enumerate(TTs_Chn0)]
+list_chn1 = [np.sum(x) / time_TTS[i] for i, x in enumerate(TTs_Chn1)]
+list_chn2 = [np.sum(x) / time_TTS[i] for i, x in enumerate(TTs_Chn2)]
+
+######################### PRINT INTEGRAL ####################################
+print("Integral chn0: ", list_chn0)
+print('')
+print("Integral chn1: ", list_chn1)
+print('')
+print("Integral chn2: ", list_chn2)
+
     
         
 
