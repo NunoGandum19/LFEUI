@@ -94,22 +94,21 @@ Channels = np.array(range(len(TT5_Chn0)))
 x_grid = np.linspace(0, len(TT5_Chn0), 100000)
 
 # Theoretical Energies (Assumimos o Valor de Energia de Pico Como a média ponderada dos vários ficos) [E_Pu, E_Am, E_Cm]
-Energias = [5.148, 5.478, 5.795]
+Energias = [5.148, 5.478, 5.795] # MeV
 
 ######################## Calibration 1 #################################################################
 ### Calibration with TT5 ###
-Channels = np.array(range(len(TT5_Chn0)))
-Detectors = [TT5_Chn0, TT5_Chn1]
+Detectors_TT5 = [TT5_Chn0, TT5_Chn1]
 
 # Define initial guess and bounds 
 p0_TT5 = [[100, 650, 10, 100, 700, 10, 100, 730, 10, 0], [90, 650, 5, 90, 692, 5, 90, 733, 5, 0]]
 bounds_TT5 = ([[75, 600, 0, 75, 650, 0, 75, 700, 0, 0], [125, 700, 15, 125, 750, 15, 125, 760, 15, 0.001]], 
               [[80, 625, 4.5, 80, 675, 4.5, 80, 715, 4.5, 0], [100, 670, 10, 100, 700, 10, 100, 750, 10, 0.001]])
 
-m, b_, delta_m, delta_b = [], [], [], []
-for i in range(len(Detectors)):
+m_TT5, b_TT5, delta_m_TT5, delta_b_TT5 = [], [], [], []
+for i in range(len(Detectors_TT5)):
     # Fit data
-    params1, covariance = curve_fit(gaussian3_sum, Channels, Detectors[i], p0=p0_TT5[i], bounds=bounds_TT5[i], method='trf')
+    params1, covariance = curve_fit(gaussian3_sum, Channels, Detectors_TT5[i], p0=p0_TT5[i], bounds=bounds_TT5[i], method='trf')
 
     A_Pu, mu_Pu, sigma_Pu, A_Am, mu_Am, sigma_Am, A_Cm, mu_Cm, sigma_Cm, C = params1
     errors = np.sqrt(np.diag(covariance))
@@ -145,14 +144,68 @@ for i in range(len(Detectors)):
     plt.grid()
     plt.show()
     
-    m.append(a)
-    b_.append(b)
-    delta_m.append(errors[0])
-    delta_b.append(errors[1])
+    m_TT5.append(a)
+    b_TT5.append(b)
+    delta_m_TT5.append(errors[0])
+    delta_b_TT5.append(errors[1])
 
 print("Calibration")
-print (f"Chn0: m = {m[0]} +- {delta_m[0]}, b = {b_[0]} +- {delta_b[0]}")
-print (f"Chn1: m = {m[1]} +- {delta_m[1]}, b = {b_[1]} +- {delta_b[1]}")
+print (f"Chn0: m = {m_TT5[0]} +- {delta_m_TT5[0]}, b = {b_TT5[0]} +- {delta_b_TT5[0]}")
+print (f"Chn1: m = {m_TT5[1]} +- {delta_m_TT5[1]}, b = {b_TT5[1]} +- {delta_b_TT5[1]}")
 
 ######################## Calibration 2 #################################
 #### Calibration with TT18
+Detectors_TT18 = [TT18_Chn0, TT18_Chn1]
+
+# Define initial guess and bounds 
+p0_TT18 = [[50, 555, 5, 50, 600, 5, 50, 630, 5, 0], [50, 557, 4, 50, 591, 4, 50, 625, 4, 0]]
+bounds_TT18 = ([[25, 545, 0, 25, 585, 0, 25, 615, 0, 0], [75, 570, 10, 75, 600, 10, 75, 635, 10, 0.001]], 
+               [[25, 552, 2, 25, 587, 2, 25, 620, 2, 0], [75, 566, 6, 75, 597, 6, 75, 630, 6, 0.001]])
+
+m_TT18, b_TT18, delta_m_TT18, delta_b_TT18 = [], [], [], []
+for i in range(len(Detectors_TT18)):
+    # Fit data
+    params1, covariance = curve_fit(gaussian3_sum, Channels, Detectors_TT18[i], p0=p0_TT18[i], bounds=bounds_TT18[i], method='trf')
+
+    A_Pu, mu_Pu, sigma_Pu, A_Am, mu_Am, sigma_Am, A_Cm, mu_Cm, sigma_Cm, C = params1
+    errors = np.sqrt(np.diag(covariance))
+
+    """print (f"Pu: A = {A_Pu} +- {errors[0]}, mu = {mu_Pu} +- {errors[1]}, sigma = {sigma_Pu} +- {errors[2]}")
+    print (f"Am: A = {A_Am} +- {errors[3]}, mu = {mu_Am} +- {errors[4]}, sigma = {sigma_Am} +- {errors[5]}")
+    print (f"Cr: A = {A_Cm} +- {errors[6]}, mu = {mu_Cm} +- {errors[7]}, sigma = {sigma_Cm} +- {errors[8]}")
+    """
+    # Plot data
+    plt.figure(figsize=(10, 6))
+    plt.plot(Channels, TT18_Chn0, 'b-', label='data')
+    plt.plot(x_grid, gaussian3_sum(x_grid, *params1), 'r-', label='fit')
+    plt.yscale("log")  
+    plt.xlabel("Channel")
+    plt.ylabel("Counts (log scale)")
+    plt.show()
+
+    Canais_médias = [mu_Pu, mu_Am, mu_Cm]
+
+    #### Calibration 
+    params2, covariance = curve_fit(linear, Canais_médias, Energias)
+    a, b = params2
+    errors = np.sqrt(np.diag(covariance))
+    #print (f"a = {a} +- {errors[0]}, b = {b} +- {errors[1]}")
+
+    xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
+    plt.plot(xfit , linear(xfit, *params2), 'r-', label='fit')
+    plt.plot(Canais_médias, Energias, label='data', marker = 'o', color = 'black', linestyle='None')
+    plt.text(0.1, 0.90, f'a: {a:.4f} +- {"{:.7f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
+    plt.text(0.1, 0.85, f'b: {b:.4f} +- {"{:.5f}".format(errors[1])}', transform = plt.gca().transAxes, color='black')
+    plt.xlabel("Channel")
+    plt.ylabel("Energy (MeV)")
+    plt.grid()
+    plt.show()
+    
+    m_TT18.append(a)
+    b_TT18.append(b)
+    delta_m_TT18.append(errors[0])
+    delta_b_TT18.append(errors[1])
+
+print("Calibration")
+print (f"Chn0: m = {m_TT18[0]} +- {delta_m_TT18[0]}, b = {b_TT18[0]} +- {delta_b_TT18[0]}")
+print (f"Chn1: m = {m_TT18[1]} +- {delta_m_TT18[1]}, b = {b_TT18[1]} +- {delta_b_TT18[1]}")
