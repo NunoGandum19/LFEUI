@@ -88,9 +88,13 @@ TTs_names = ["TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", "TT14", "TT15"
 
 
 ######################### CUT INITIAL NOISE ####################################
-TTs_Chn0 = [x[20:] for x in TTs_Chn0]
-TTs_Chn1 = [x[20:] for x in TTs_Chn1]
-TTs_Chn2 = [x[20:] for x in TTs_Chn2]
+TTs_Chn0 = [x[21:] for x in TTs_Chn0]
+TTs_Chn1 = [x[21:] for x in TTs_Chn1]
+TTs_Chn2 = [x[21:] for x in TTs_Chn2]
+
+######################### PLOT CUT DATA ####################################
+for i in range(len(TTs_Chn0)):
+    plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])
 
 ######################### TRANSFORM IN NP ARRAYS ####################################
 TTs_Chn0 = [np.array(x) for x in TTs_Chn0]
