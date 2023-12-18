@@ -89,9 +89,9 @@ TTs_Chn1 = [TT4_Chn1, TT5_Chn1, TT7_Chn1, TT8_Chn1, TT9_Chn1, TT10_Chn1, TT11_Ch
 TTs_Chn2 = [TT4_Chn2, TT5_Chn2, TT7_Chn2, TT8_Chn2, TT9_Chn2, TT10_Chn2, TT11_Chn2, TT12_Chn2, TT13_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2, TT18_Chn2]
 TTs_names = ["TT4", "TT5", "TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", "TT14", "TT15", "TT16", "TT18"]
 
-"""for i in range(len(TTs_Chn0)):
+for i in range(len(TTs_Chn0)):
     plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])  
-"""
+
 
 ##########################################################################
 ######################### DEFINITIONS ####################################
@@ -104,6 +104,9 @@ def gaussian3_sum(x, a1, mu1, sigma1, a2, mu2, sigma2, a3, mu3, sigma3, c):
 
 def linear (x, a, b):
     return a*x + b
+
+def over_log(x, a, b):
+    return a/(np.log(x)) + b
 
 ###### Define random things 
 Channels = np.array(range(len(TT5_Chn0)))
@@ -244,10 +247,7 @@ print("\n")
 ######################### QUALIFICATION ########################################
 ################################################################################
 
-### Endpoint dos espetros de B
-def over_log(x, a, b):
-    return a/(np.log(x)) + b
-
+###### Endpoint dos espetros de B
 def endpoint(data, xmin, xmax):
     x = np.linspace(xmin, xmax, len(data) * 100)
         
@@ -285,25 +285,6 @@ def endpoint2(data, xmin, xmax):
     plt.legend()
     plt.show()
     return np.exp(-a/b)
-
-
-    x = np.linspace(xmin, xmax, len(data) * 100)
-
-    p1, cov1 = curve_fit(exp_neg, Channels[xmin:xmax], data[xmin:xmax], p0=[10, -1, 500])
-    a, b, x0 = p1
-
-    plt.figure(figsize=(10, 6))
-    plt.plot(Channels[xmin: xmax], data[xmin: xmax], 'b-', label='data', linestyle='None', marker='o')
-    plt.plot(x, exp_neg(x, *p1), 'r-', label='exp(-a*(x-x0)) + b')
-    plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
-    plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(errors[1])}', transform = plt.gca().transAxes, color='black')
-    plt.text(0.6, 0.80, f'x0: {x0:.4f} +- {"{:.4f}".format(errors[2])}', transform = plt.gca().transAxes, color='black')
-    plt.grid()
-    plt.xlabel("Channel")
-    plt.ylabel("Counts")
-    plt.legend()
-    plt.show()
-    return - np.log(-b) / a
 
 # TT7
 endpoint_TT7 = endpoint(TT7_Chn0, 500, 600)
