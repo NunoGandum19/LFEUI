@@ -308,7 +308,6 @@ def endpoint2(data, xmin, xmax):
 # TT7
 endpoint_TT7 = endpoint(TT7_Chn0, 500, 600)
 endpoint_TT7_2 = endpoint2(TT7_Chn0, 500, 600)
-endpoint_TT7_3 = endpoint3(TT7_Chn0, 500, 600)
 print ("Endpoint TT7 com linear: ", endpoint_TT7)
 print ("Endpoint TT7 com 1/log: ", endpoint_TT7_2)
 
