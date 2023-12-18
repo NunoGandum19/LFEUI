@@ -1,11 +1,19 @@
+""" Objetivos:
+    - Determinar se existe B nos materiais
+    - Determinar a quantindade de B nos materiais
+    - Verificar se existe Li na amostra que supostamente tinha Li
+    - Determinar o endpoint do espectro de B (comparar com o Teórico)
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import xml.etree.ElementTree as ET
 from reader import reader, plotter, plotter_3
 from sklearn.preprocessing import StandardScaler
-
+#######################################################################
 ############################ READ DATA ################################
+#######################################################################
 ### Read TT4 ###
 TT4_Chn0 = reader("../2_exp/TT_4/UNFILTERED/CH0@N6781_21198_Espectrum_TT_4_20231205_163512.n42", 0)
 TT4_Chn1 = reader("../2_exp/TT_4/UNFILTERED/CH1@N6781_21198_Espectrum_TT_4_20231205_163512.n42", 1)
@@ -71,7 +79,10 @@ TT18_Chn0 = reader("../2_exp/TT_18/UNFILTERED/CH0@N6781_21198_Espectrum_TT_18_20
 TT18_Chn1 = reader("../2_exp/TT_18/UNFILTERED/CH1@N6781_21198_Espectrum_TT_18_20231205_184721.n42", 1)
 TT18_Chn2 = reader("../2_exp/TT_18/UNFILTERED/CH2@N6781_21198_Espectrum_TT_18_20231205_184721.n42", 2)
 
+########################################################################
 ######################### PLOT DATA ####################################
+########################################################################
+
 TTs_Chn0 = [TT4_Chn0, TT5_Chn0, TT7_Chn0, TT8_Chn0, TT9_Chn0, TT10_Chn0, TT11_Chn0, TT12_Chn0, TT13_Chn0, TT14_Chn0, TT15_Chn0, TT16_Chn0, TT18_Chn0]
 TTs_Chn1 = [TT4_Chn1, TT5_Chn1, TT7_Chn1, TT8_Chn1, TT9_Chn1, TT10_Chn1, TT11_Chn1, TT12_Chn1, TT13_Chn1, TT14_Chn1, TT15_Chn1, TT16_Chn1, TT18_Chn1]
 TTs_Chn2 = [TT4_Chn2, TT5_Chn2, TT7_Chn2, TT8_Chn2, TT9_Chn2, TT10_Chn2, TT11_Chn2, TT12_Chn2, TT13_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2, TT18_Chn2]
@@ -80,7 +91,11 @@ TTs_names = ["TT4", "TT5", "TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", 
 """for i in range(len(TTs_Chn0)):
     plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])  
 """
-######################## Define functions ##############################
+
+##########################################################################
+######################### DEFINITIONS ####################################
+##########################################################################
+###### Define functions
 def gaussian3_sum(x, a1, mu1, sigma1, a2, mu2, sigma2, a3, mu3, sigma3, c):
     return (a1 * np.exp(-(x - mu1)**2 / (2 * sigma1**2)) + 
             a2 * np.exp(-(x - mu2)**2 / (2 * sigma2**2)) +
@@ -89,14 +104,24 @@ def gaussian3_sum(x, a1, mu1, sigma1, a2, mu2, sigma2, a3, mu3, sigma3, c):
 def linear (x, a, b):
     return a*x + b
 
-######################## Definitions ###################################################################
+###### Define random things 
 Channels = np.array(range(len(TT5_Chn0)))
 x_grid = np.linspace(0, len(TT5_Chn0), 100000)
 
-# Theoretical Energies (Assumimos o Valor de Energia de Pico Como a média ponderada dos vários ficos) [E_Pu, E_Am, E_Cm]
+###### Theoretical Energies (Assumimos o Valor de Energia de Pico Como a média ponderada dos vários ficos) [E_Pu, E_Am, E_Cm]
 Energias = [5.148, 5.478, 5.795] # MeV
 
-######################## Calibration 1 #################################################################
+###### Define the aquisition times
+time_TTs = [95, 49, 37, 15, 337, 1146, 58, 245, 272, 251] #in seconds
+
+###### Define the thresholds
+thresholds = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+
+##########################################################################
+######################### CALIBRATION ####################################
+##########################################################################
+###### Calibration 1 
 ### Calibration with TT5 ###
 Detectors_TT5 = [TT5_Chn0, TT5_Chn1]
 
@@ -153,8 +178,8 @@ print("Calibration")
 print (f"Chn0: m = {m_TT5[0]} +- {delta_m_TT5[0]}, b = {b_TT5[0]} +- {delta_b_TT5[0]}")
 print (f"Chn1: m = {m_TT5[1]} +- {delta_m_TT5[1]}, b = {b_TT5[1]} +- {delta_b_TT5[1]}")
 
-######################## Calibration 2 #################################
-#### Calibration with TT18
+###### Calibration 2 
+### Calibration with TT18
 Detectors_TT18 = [TT18_Chn0, TT18_Chn1]
 
 # Define initial guess and bounds 
@@ -209,3 +234,31 @@ for i in range(len(Detectors_TT18)):
 print("Calibration")
 print (f"Chn0: m = {m_TT18[0]} +- {delta_m_TT18[0]}, b = {b_TT18[0]} +- {delta_b_TT18[0]}")
 print (f"Chn1: m = {m_TT18[1]} +- {delta_m_TT18[1]}, b = {b_TT18[1]} +- {delta_b_TT18[1]}")
+
+################################################################################
+######################### QUALIFICATION ########################################
+################################################################################
+
+
+################################################################################
+######################### QUANTIFICATION #######################################
+################################################################################
+def Integral(data, time, threshold):
+    res = 0
+    for i in range(threshold, len(data)):
+        res += data[i]
+    return res / time
+
+Data_Chn0 = TTs_Chn0[2:len(TTs_Chn0)-1]
+Data_Chn1 = TTs_Chn1[2:len(TTs_Chn1)-1]
+
+Integral_Chn0, Integral_Chn1 = [], []
+for i in range(len(Data_Chn0)):
+    integral0 = Integral(Data_Chn0[i], time_TTs[i], thresholds[i])
+    integral1 = Integral(Data_Chn1[i], time_TTs[i], thresholds[i])
+    Integral_Chn0.append(integral0)
+    Integral_Chn1.append(integral1)
+
+print ("Integrais Chn0:", Integral_Chn0)
+print ("Integrais Chn1:", Integral_Chn1)
+
