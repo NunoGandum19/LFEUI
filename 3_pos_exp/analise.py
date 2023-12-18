@@ -3,6 +3,7 @@
     - Determinar a quantindade de B nos materiais
     - Verificar se existe Li na amostra que supostamente tinha Li
     - Determinar o endpoint do espectro de B (comparar com o Teórico)
+    - Verificar se o motor influencia a calibração (calibração 4 - calibração 5)
 """
 
 import numpy as np
@@ -115,8 +116,11 @@ Energias = [5.148, 5.478, 5.795] # MeV
 time_TTs = [95, 49, 37, 15, 337, 1146, 58, 245, 272, 251] #in seconds
 
 ###### Define the thresholds
-thresholds = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+thresholds = [170, 170, 170, 170, 170, 170, 95, 95, 95, 95]
 
+###### Define the data
+Data_Chn0 = TTs_Chn0[2:len(TTs_Chn0)-1]
+Data_Chn1 = TTs_Chn1[2:len(TTs_Chn1)-1]
 
 ##########################################################################
 ######################### CALIBRATION ####################################
@@ -142,14 +146,14 @@ for i in range(len(Detectors_TT5)):
     print (f"Am: A = {A_Am} +- {errors[3]}, mu = {mu_Am} +- {errors[4]}, sigma = {sigma_Am} +- {errors[5]}")
     print (f"Cr: A = {A_Cm} +- {errors[6]}, mu = {mu_Cm} +- {errors[7]}, sigma = {sigma_Cm} +- {errors[8]}")
     """
-    # Plot data
+    """# Plot data
     plt.figure(figsize=(10, 6))
     plt.plot(Channels, TT5_Chn0, 'b-', label='data')
     plt.plot(x_grid, gaussian3_sum(x_grid, *params1), 'r-', label='fit')
     plt.yscale("log")  
     plt.xlabel("Channel")
     plt.ylabel("Counts (log scale)")
-    plt.show()
+    plt.show()"""
 
     Canais_médias = [mu_Pu, mu_Am, mu_Cm]
 
@@ -159,7 +163,7 @@ for i in range(len(Detectors_TT5)):
     errors = np.sqrt(np.diag(covariance))
     #print (f"a = {a} +- {errors[0]}, b = {b} +- {errors[1]}")
 
-    xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
+    """xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
     plt.plot(xfit , linear(xfit, *params2), 'r-', label='fit')
     plt.plot(Canais_médias, Energias, label='data', marker = 'o', color = 'black', linestyle='None')
     plt.text(0.1, 0.90, f'a: {a:.4f} +- {"{:.7f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
@@ -167,7 +171,7 @@ for i in range(len(Detectors_TT5)):
     plt.xlabel("Channel")
     plt.ylabel("Energy (MeV)")
     plt.grid()
-    plt.show()
+    plt.show()"""
     
     m_TT5.append(a)
     b_TT5.append(b)
@@ -199,14 +203,14 @@ for i in range(len(Detectors_TT18)):
     print (f"Am: A = {A_Am} +- {errors[3]}, mu = {mu_Am} +- {errors[4]}, sigma = {sigma_Am} +- {errors[5]}")
     print (f"Cr: A = {A_Cm} +- {errors[6]}, mu = {mu_Cm} +- {errors[7]}, sigma = {sigma_Cm} +- {errors[8]}")
     """
-    # Plot data
+    """# Plot data
     plt.figure(figsize=(10, 6))
     plt.plot(Channels, TT18_Chn0, 'b-', label='data')
     plt.plot(x_grid, gaussian3_sum(x_grid, *params1), 'r-', label='fit')
     plt.yscale("log")  
     plt.xlabel("Channel")
     plt.ylabel("Counts (log scale)")
-    plt.show()
+    plt.show()"""
 
     Canais_médias = [mu_Pu, mu_Am, mu_Cm]
 
@@ -216,7 +220,7 @@ for i in range(len(Detectors_TT18)):
     errors = np.sqrt(np.diag(covariance))
     #print (f"a = {a} +- {errors[0]}, b = {b} +- {errors[1]}")
 
-    xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
+    """xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
     plt.plot(xfit , linear(xfit, *params2), 'r-', label='fit')
     plt.plot(Canais_médias, Energias, label='data', marker = 'o', color = 'black', linestyle='None')
     plt.text(0.1, 0.90, f'a: {a:.4f} +- {"{:.7f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
@@ -224,7 +228,7 @@ for i in range(len(Detectors_TT18)):
     plt.xlabel("Channel")
     plt.ylabel("Energy (MeV)")
     plt.grid()
-    plt.show()
+    plt.show()"""
     
     m_TT18.append(a)
     b_TT18.append(b)
@@ -234,12 +238,81 @@ for i in range(len(Detectors_TT18)):
 print("Calibration")
 print (f"Chn0: m = {m_TT18[0]} +- {delta_m_TT18[0]}, b = {b_TT18[0]} +- {delta_b_TT18[0]}")
 print (f"Chn1: m = {m_TT18[1]} +- {delta_m_TT18[1]}, b = {b_TT18[1]} +- {delta_b_TT18[1]}")
+print("\n")
 
 ################################################################################
 ######################### QUALIFICATION ########################################
 ################################################################################
 
+### Endpoint dos espetros de B
+def over_log(x, a, b):
+    return a/(np.log(x)) + b
 
+def endpoint(data, xmin, xmax):
+    x = np.linspace(xmin, xmax, len(data) * 100)
+        
+    p1, cov1 = curve_fit(linear, Channels[xmin:xmax], data[xmin:xmax])
+    a, b = p1
+    err = np.sqrt(np.diag(cov1))
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(Channels[xmin: xmax], data[xmin: xmax], 'b-', label='data', linestyle='None', marker='o')
+    plt.plot(x, linear(x, *p1), 'r-', label='a*x + b')
+    plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
+    plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(err[1])}', transform = plt.gca().transAxes, color='black')
+    plt.grid()
+    plt.xlabel("Channel")
+    plt.ylabel("Counts ")
+    plt.legend()
+    plt.show()
+    return -b/a
+
+def endpoint2(data, xmin, xmax):
+    x = np.linspace(xmin, xmax, len(data) * 100)
+
+    p1, cov1 = curve_fit(over_log, Channels[xmin:xmax], data[xmin:xmax])
+    a, b = p1
+    err = np.sqrt(np.diag(cov1))
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(Channels[xmin: xmax], data[xmin: xmax], 'b-', label='data', linestyle='None', marker='o')
+    plt.plot(x, over_log(x, *p1), 'r-', label='a/(log(x)) + b')
+    plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
+    plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(err[1])}', transform = plt.gca().transAxes, color='black')
+    plt.grid()
+    plt.xlabel("Channel")
+    plt.ylabel("Counts")
+    plt.legend()
+    plt.show()
+    return np.exp(-a/b)
+
+
+    x = np.linspace(xmin, xmax, len(data) * 100)
+
+    p1, cov1 = curve_fit(exp_neg, Channels[xmin:xmax], data[xmin:xmax], p0=[10, -1, 500])
+    a, b, x0 = p1
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(Channels[xmin: xmax], data[xmin: xmax], 'b-', label='data', linestyle='None', marker='o')
+    plt.plot(x, exp_neg(x, *p1), 'r-', label='exp(-a*(x-x0)) + b')
+    plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
+    plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(errors[1])}', transform = plt.gca().transAxes, color='black')
+    plt.text(0.6, 0.80, f'x0: {x0:.4f} +- {"{:.4f}".format(errors[2])}', transform = plt.gca().transAxes, color='black')
+    plt.grid()
+    plt.xlabel("Channel")
+    plt.ylabel("Counts")
+    plt.legend()
+    plt.show()
+    return - np.log(-b) / a
+
+# TT7
+endpoint_TT7 = endpoint(TT7_Chn0, 500, 600)
+endpoint_TT7_2 = endpoint2(TT7_Chn0, 500, 600)
+endpoint_TT7_3 = endpoint3(TT7_Chn0, 500, 600)
+print ("Endpoint TT7 com linear: ", endpoint_TT7)
+print ("Endpoint TT7 com 1/log: ", endpoint_TT7_2)
+
+print("\n")
 ################################################################################
 ######################### QUANTIFICATION #######################################
 ################################################################################
@@ -248,9 +321,6 @@ def Integral(data, time, threshold):
     for i in range(threshold, len(data)):
         res += data[i]
     return res / time
-
-Data_Chn0 = TTs_Chn0[2:len(TTs_Chn0)-1]
-Data_Chn1 = TTs_Chn1[2:len(TTs_Chn1)-1]
 
 Integral_Chn0, Integral_Chn1 = [], []
 for i in range(len(Data_Chn0)):
@@ -261,4 +331,5 @@ for i in range(len(Data_Chn0)):
 
 print ("Integrais Chn0:", Integral_Chn0)
 print ("Integrais Chn1:", Integral_Chn1)
+
 
