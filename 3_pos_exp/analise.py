@@ -12,6 +12,7 @@ from scipy.optimize import curve_fit
 import xml.etree.ElementTree as ET
 from reader import reader, plotter, plotter_3
 from sklearn.preprocessing import StandardScaler
+from prettytable import PrettyTable
 #######################################################################
 ############################ READ DATA ################################
 #######################################################################
@@ -96,6 +97,7 @@ for i in range(len(TTs_Chn0)):
 ##########################################################################
 ######################### DEFINITIONS ####################################
 ##########################################################################
+
 ###### Define functions
 def gaussian3_sum(x, a1, mu1, sigma1, a2, mu2, sigma2, a3, mu3, sigma3, c):
     return (a1 * np.exp(-(x - mu1)**2 / (2 * sigma1**2)) + 
@@ -149,8 +151,8 @@ for i in range(len(Detectors_TT5)):
     print (f"Am: A = {A_Am} +- {errors[3]}, mu = {mu_Am} +- {errors[4]}, sigma = {sigma_Am} +- {errors[5]}")
     print (f"Cr: A = {A_Cm} +- {errors[6]}, mu = {mu_Cm} +- {errors[7]}, sigma = {sigma_Cm} +- {errors[8]}")
     """
-    """# Plot data
-    plt.figure(figsize=(10, 6))
+    # Plot data
+    """plt.figure(figsize=(10, 6))
     plt.plot(Channels, TT5_Chn0, 'b-', label='data')
     plt.plot(x_grid, gaussian3_sum(x_grid, *params1), 'r-', label='fit')
     plt.yscale("log")  
@@ -181,7 +183,7 @@ for i in range(len(Detectors_TT5)):
     delta_m_TT5.append(errors[0])
     delta_b_TT5.append(errors[1])
 
-print("Calibration")
+print("Calibration1")
 print (f"Chn0: m = {m_TT5[0]} +- {delta_m_TT5[0]}, b = {b_TT5[0]} +- {delta_b_TT5[0]}")
 print (f"Chn1: m = {m_TT5[1]} +- {delta_m_TT5[1]}, b = {b_TT5[1]} +- {delta_b_TT5[1]}")
 
@@ -238,10 +240,14 @@ for i in range(len(Detectors_TT18)):
     delta_m_TT18.append(errors[0])
     delta_b_TT18.append(errors[1])
 
-print("Calibration")
+print("Calibration2")
 print (f"Chn0: m = {m_TT18[0]} +- {delta_m_TT18[0]}, b = {b_TT18[0]} +- {delta_b_TT18[0]}")
 print (f"Chn1: m = {m_TT18[1]} +- {delta_m_TT18[1]}, b = {b_TT18[1]} +- {delta_b_TT18[1]}")
 print("\n")
+
+# Transformação Chn -> E
+def Chn_to_E (Chn, m, b):
+    return m*Chn + b
 
 ################################################################################
 ######################### QUALIFICATION ########################################
@@ -255,8 +261,8 @@ def endpoint(data, xmin, xmax):
     a, b = p1
     err = np.sqrt(np.diag(cov1))
     
-    plt.figure(figsize=(10, 6))
-    plt.plot(Channels[xmin: xmax], data[xmin: xmax], 'b-', label='data', linestyle='None', marker='o')
+    """plt.figure(figsize=(10, 6))
+    plt.plot(Channels[xmin: xmax], data[xmin: xmax], label='data', linestyle='None', marker='o')
     plt.plot(x, linear(x, *p1), 'r-', label='a*x + b')
     plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
     plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(err[1])}', transform = plt.gca().transAxes, color='black')
@@ -264,7 +270,7 @@ def endpoint(data, xmin, xmax):
     plt.xlabel("Channel")
     plt.ylabel("Counts ")
     plt.legend()
-    plt.show()
+    plt.show()"""
     return -b/a
 
 def endpoint2(data, xmin, xmax):
@@ -274,8 +280,8 @@ def endpoint2(data, xmin, xmax):
     a, b = p1
     err = np.sqrt(np.diag(cov1))
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(Channels[xmin: xmax], data[xmin: xmax], 'b-', label='data', linestyle='None', marker='o')
+    """plt.figure(figsize=(10, 6))
+    plt.plot(Channels[xmin: xmax], data[xmin: xmax], label='data', linestyle='None', marker='o')
     plt.plot(x, over_log(x, *p1), 'r-', label='a/(log(x)) + b')
     plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
     plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(err[1])}', transform = plt.gca().transAxes, color='black')
@@ -283,15 +289,24 @@ def endpoint2(data, xmin, xmax):
     plt.xlabel("Channel")
     plt.ylabel("Counts")
     plt.legend()
-    plt.show()
+    plt.show()"""
     return np.exp(-a/b)
 
-# TT7
-endpoint_TT7 = endpoint(TT7_Chn0, 500, 600)
-endpoint_TT7_2 = endpoint2(TT7_Chn0, 500, 600)
-print ("Endpoint TT7 com linear: ", endpoint_TT7)
-print ("Endpoint TT7 com 1/log: ", endpoint_TT7_2)
+### Colocar os endpoints numa tabela
+table = PrettyTable()
+table.field_names = ["TT", "linear_Chn0", "1/log_Chn0", "linear_Chn1", "1/log_Chn1"]
+table.add_row(["TT7", endpoint(TT7_Chn0, 500, 600), endpoint2(TT7_Chn0, 500, 600), endpoint(TT7_Chn1, 500, 600), endpoint2(TT7_Chn1, 500, 600)])
+table.add_row(["TT8", endpoint(TT8_Chn0, 500, 600), endpoint2(TT8_Chn0, 500, 600), endpoint(TT8_Chn1, 500, 600), endpoint2(TT8_Chn1, 500, 600)])
+table.add_row(["TT9", endpoint(TT9_Chn0, 500, 600), endpoint2(TT9_Chn0, 500, 600), endpoint(TT9_Chn1, 500, 600), endpoint2(TT9_Chn1, 500, 600)])
+table.add_row(["TT12", endpoint(TT12_Chn0, 500, 600), endpoint2(TT12_Chn0, 500, 600), endpoint(TT12_Chn1, 500, 600), endpoint2(TT12_Chn1, 500, 600)])
+table.add_row(["-", "-", "-", "-", "-"])
+table.add_row(["TT13", endpoint(TT13_Chn0, 500, 650), endpoint2(TT13_Chn0, 500, 650), endpoint(TT13_Chn1, 500, 650), endpoint2(TT13_Chn1, 500, 650)])
+table.add_row(["TT14", endpoint(TT14_Chn0, 500, 650), endpoint2(TT14_Chn0, 500, 650), endpoint(TT14_Chn1, 500, 650), endpoint2(TT14_Chn1, 500, 650)])
+table.add_row(["TT15", endpoint(TT15_Chn0, 550, 800), endpoint2(TT15_Chn0, 550, 800), endpoint(TT15_Chn1, 550, 800), endpoint2(TT15_Chn1, 550, 800)])
+table.add_row(["TT16", endpoint(TT16_Chn0, 550, 800), endpoint2(TT16_Chn0, 550, 800), endpoint(TT16_Chn1, 550, 800), endpoint2(TT16_Chn1, 550, 800)])
 
+print ("Endpoint dos espetros de B [Chn]:")
+print (table)
 print("\n")
 ################################################################################
 ######################### QUANTIFICATION #######################################
