@@ -174,19 +174,22 @@ for i in range(len(Detectors_TT5)):
     plt.ylabel("Counts (log scale)")
     plt.show()
 
-    Canais_médias = [mu_Pu, mu_Am, mu_Cm]
+    Canais_médias = np.array([mu_Pu, mu_Am, mu_Cm])
 
     #### Calibration 
     params2, covariance = curve_fit(linear, Canais_médias, Energias)
     a, b = params2
     errors = np.sqrt(np.diag(covariance))
-    #print (f"a = {a} +- {errors[0]}, b = {b} +- {errors[1]}")
+
+    residuals = Energias - linear(Canais_médias, a, b)
+    chi_squared = np.sum((residuals)**2 / np.var(residuals))
 
     xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
     plt.plot(xfit , linear(xfit, *params2), 'r-', label='fit')
     plt.plot(Canais_médias, Energias, label='data', marker = 'o', color = 'black', linestyle='None')
     plt.text(0.1, 0.90, f'a: {a:.4f} +- {"{:.7f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
     plt.text(0.1, 0.85, f'b: {b:.4f} +- {"{:.5f}".format(errors[1])}', transform = plt.gca().transAxes, color='black')
+    plt.text(0.1, 0.80, f'chi_squared: {chi_squared}', transform = plt.gca().transAxes, color='black')
     plt.xlabel("Channel")
     plt.ylabel("Energy (MeV)")
     plt.grid()
@@ -231,19 +234,22 @@ for i in range(len(Detectors_TT18)):
     plt.ylabel("Counts (log scale)")
     plt.show()
 
-    Canais_médias = [mu_Pu, mu_Am, mu_Cm]
+    Canais_médias = np.array([mu_Pu, mu_Am, mu_Cm])
 
     #### Calibration 
     params2, covariance = curve_fit(linear, Canais_médias, Energias)
     a, b = params2
     errors = np.sqrt(np.diag(covariance))
-    #print (f"a = {a} +- {errors[0]}, b = {b} +- {errors[1]}")
+
+    residuals = Energias - linear(Canais_médias, a, b)
+    chi_squared = np.sum((residuals)**2 / np.var(residuals))
 
     xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
     plt.plot(xfit , linear(xfit, *params2), 'r-', label='fit')
     plt.plot(Canais_médias, Energias, label='data', marker = 'o', color = 'black', linestyle='None')
     plt.text(0.1, 0.90, f'a: {a:.4f} +- {"{:.7f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
     plt.text(0.1, 0.85, f'b: {b:.4f} +- {"{:.5f}".format(errors[1])}', transform = plt.gca().transAxes, color='black')
+    plt.text(0.1, 0.80, f'chi_squared: {chi_squared}', transform = plt.gca().transAxes, color='black')
     plt.xlabel("Channel")
     plt.ylabel("Energy (MeV)")
     plt.grid()
