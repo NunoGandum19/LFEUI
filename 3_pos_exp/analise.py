@@ -26,7 +26,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import xml.etree.ElementTree as ET
-from reader import reader, plotter, plotter_3
+from reader import reader, plotter, plotter_2, plotter_3
 from sklearn.preprocessing import StandardScaler
 from prettytable import PrettyTable
 #######################################################################
@@ -109,6 +109,9 @@ TTs_names = ["TT4", "TT5", "TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", 
 """for i in range(len(TTs_Chn0)):
     plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])  
 """
+
+plotter_2(TT5_Chn0, TT5_Chn1, "Calibration Spectrum - 1st Energy")
+plotter_2(TT18_Chn0, TT18_Chn1, "Calibration Spectrum - 2nd Energy")
 
 ##########################################################################
 ######################### DEFINITIONS ####################################
