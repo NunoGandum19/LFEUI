@@ -4,6 +4,22 @@
     - Verificar se existe Li na amostra que supostamente tinha Li
     - Determinar o endpoint do espectro de B (comparar com o Teórico)
     - Verificar se o motor influencia a calibração (calibração 4 - calibração 5)
+
+    info:
+        TT4 - primeira calibração com motor
+        TT5 - primeira calibração sem motor
+        TT7 - vidro 4
+        TT8 - vidro 3
+        TT9 - vidro 3.2
+        TT10 - não importa
+        TT11 - vidro 1 com carga demasiado pequena
+        TT12 - vidro 1
+        MUDANCA DE ENERGIA
+        TT13 - vidro 3.2
+        TT14 - vidro 3.2 com diferente ganho
+        TT15 - vidro 3 com diferente ganho
+        TT16 - vidro 4 com diferente ganho
+        TT18 - segunda calibração
 """
 
 import numpy as np
@@ -90,9 +106,9 @@ TTs_Chn1 = [TT4_Chn1, TT5_Chn1, TT7_Chn1, TT8_Chn1, TT9_Chn1, TT10_Chn1, TT11_Ch
 TTs_Chn2 = [TT4_Chn2, TT5_Chn2, TT7_Chn2, TT8_Chn2, TT9_Chn2, TT10_Chn2, TT11_Chn2, TT12_Chn2, TT13_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2, TT18_Chn2]
 TTs_names = ["TT4", "TT5", "TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", "TT14", "TT15", "TT16", "TT18"]
 
-for i in range(len(TTs_Chn0)):
+"""for i in range(len(TTs_Chn0)):
     plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])  
-
+"""
 
 ##########################################################################
 ######################### DEFINITIONS ####################################
@@ -107,9 +123,6 @@ def gaussian3_sum(x, a1, mu1, sigma1, a2, mu2, sigma2, a3, mu3, sigma3, c):
 def linear (x, a, b):
     return a*x + b
 
-def over_log(x, a, b):
-    return a/(np.log(x)) + b
-
 ###### Define random things 
 Channels = np.array(range(len(TT5_Chn0)))
 x_grid = np.linspace(0, len(TT5_Chn0), 100000)
@@ -120,9 +133,6 @@ Energias = [5.148, 5.478, 5.795] # MeV
 ###### Define the aquisition times
 time_TTs = [95, 49, 37, 15, 337, 1146, 58, 245, 272, 251] #in seconds
 
-###### Define the thresholds
-thresholds = [170, 170, 170, 170, 170, 170, 95, 95, 95, 95]
-
 ###### Define the data
 Data_Chn0 = TTs_Chn0[2:len(TTs_Chn0)-1]
 Data_Chn1 = TTs_Chn1[2:len(TTs_Chn1)-1]
@@ -130,6 +140,7 @@ Data_Chn1 = TTs_Chn1[2:len(TTs_Chn1)-1]
 ##########################################################################
 ######################### CALIBRATION ####################################
 ##########################################################################
+print ("Calibração:")
 ###### Calibration 1 
 ### Calibration with TT5 ###
 Detectors_TT5 = [TT5_Chn0, TT5_Chn1]
@@ -152,13 +163,13 @@ for i in range(len(Detectors_TT5)):
     print (f"Cr: A = {A_Cm} +- {errors[6]}, mu = {mu_Cm} +- {errors[7]}, sigma = {sigma_Cm} +- {errors[8]}")
     """
     # Plot data
-    """plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
     plt.plot(Channels, TT5_Chn0, 'b-', label='data')
     plt.plot(x_grid, gaussian3_sum(x_grid, *params1), 'r-', label='fit')
     plt.yscale("log")  
     plt.xlabel("Channel")
     plt.ylabel("Counts (log scale)")
-    plt.show()"""
+    plt.show()
 
     Canais_médias = [mu_Pu, mu_Am, mu_Cm]
 
@@ -168,7 +179,7 @@ for i in range(len(Detectors_TT5)):
     errors = np.sqrt(np.diag(covariance))
     #print (f"a = {a} +- {errors[0]}, b = {b} +- {errors[1]}")
 
-    """xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
+    xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
     plt.plot(xfit , linear(xfit, *params2), 'r-', label='fit')
     plt.plot(Canais_médias, Energias, label='data', marker = 'o', color = 'black', linestyle='None')
     plt.text(0.1, 0.90, f'a: {a:.4f} +- {"{:.7f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
@@ -176,7 +187,7 @@ for i in range(len(Detectors_TT5)):
     plt.xlabel("Channel")
     plt.ylabel("Energy (MeV)")
     plt.grid()
-    plt.show()"""
+    plt.show()
     
     m_TT5.append(a)
     b_TT5.append(b)
@@ -208,14 +219,14 @@ for i in range(len(Detectors_TT18)):
     print (f"Am: A = {A_Am} +- {errors[3]}, mu = {mu_Am} +- {errors[4]}, sigma = {sigma_Am} +- {errors[5]}")
     print (f"Cr: A = {A_Cm} +- {errors[6]}, mu = {mu_Cm} +- {errors[7]}, sigma = {sigma_Cm} +- {errors[8]}")
     """
-    """# Plot data
+    # Plot data
     plt.figure(figsize=(10, 6))
     plt.plot(Channels, TT18_Chn0, 'b-', label='data')
     plt.plot(x_grid, gaussian3_sum(x_grid, *params1), 'r-', label='fit')
     plt.yscale("log")  
     plt.xlabel("Channel")
     plt.ylabel("Counts (log scale)")
-    plt.show()"""
+    plt.show()
 
     Canais_médias = [mu_Pu, mu_Am, mu_Cm]
 
@@ -225,7 +236,7 @@ for i in range(len(Detectors_TT18)):
     errors = np.sqrt(np.diag(covariance))
     #print (f"a = {a} +- {errors[0]}, b = {b} +- {errors[1]}")
 
-    """xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
+    xfit = np.linspace(mu_Pu - 20, mu_Cm + 20, 100000)
     plt.plot(xfit , linear(xfit, *params2), 'r-', label='fit')
     plt.plot(Canais_médias, Energias, label='data', marker = 'o', color = 'black', linestyle='None')
     plt.text(0.1, 0.90, f'a: {a:.4f} +- {"{:.7f}".format(errors[0])}', transform = plt.gca().transAxes, color='black')
@@ -233,7 +244,7 @@ for i in range(len(Detectors_TT18)):
     plt.xlabel("Channel")
     plt.ylabel("Energy (MeV)")
     plt.grid()
-    plt.show()"""
+    plt.show()
     
     m_TT18.append(a)
     b_TT18.append(b)
@@ -252,8 +263,38 @@ def Chn_to_E (Chn, m, b):
 ################################################################################
 ######################### QUALIFICATION ########################################
 ################################################################################
+print ("Análise Qualitativa:")
 
-###### Endpoint dos espetros de B
+data_titles = ["Vidro 4 - 1a Energia", "Vidro 3 - 1a Energia", "Vidro 3.2 - 1a Energia", "TT10", 
+               "Vidro 1 - 1a Energia (carga demasiado pequena)", "Vidro 1 - 1a Energia", 
+               "Vidro 3.2 - 2a Energia", "Vidro 3.2 - 2a Energia (novo ganho)", "Vidro 3 - 2a Energia (novo ganho)", "Vidro 4 - 2a Energia (novo ganho)"]
+
+###### Plot the data with Energy
+for i in range(len(Data_Chn0)):
+    E_Chn0, E_Chn1 = 0, 0
+    if i == 3:
+        continue
+    if i < 3:
+        E_Chn0 = Chn_to_E(Channels, m_TT5[0], b_TT5[0])
+        E_Chn1 = Chn_to_E(Channels, m_TT5[1], b_TT5[1])
+    else:
+        E_Chn0 = Chn_to_E(Channels, m_TT18[0], b_TT18[0])
+        E_Chn1 = Chn_to_E(Channels, m_TT18[1], b_TT18[1])
+    plt.figure(figsize=(10, 6))
+    plt.plot(E_Chn0, Data_Chn0[i], label='Chn0', color = 'dodgerblue')
+    plt.plot(E_Chn1, Data_Chn1[i], label='Chn1', color = 'darkorange')
+    plt.yscale("log")  
+    plt.xlabel("Energy (MeV)")
+    plt.ylabel("Counts (log scale)")
+    plt.legend()
+    plt.title(data_titles[i])
+    plt.show()
+
+
+"""###### Endpoint dos espetros de B
+def over_log(x, a, b):
+    return a/(np.log(x)) + b
+
 def endpoint(data, xmin, xmax):
     x = np.linspace(xmin, xmax, len(data) * 100)
         
@@ -261,7 +302,7 @@ def endpoint(data, xmin, xmax):
     a, b = p1
     err = np.sqrt(np.diag(cov1))
     
-    """plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
     plt.plot(Channels[xmin: xmax], data[xmin: xmax], label='data', linestyle='None', marker='o')
     plt.plot(x, linear(x, *p1), 'r-', label='a*x + b')
     plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
@@ -270,7 +311,7 @@ def endpoint(data, xmin, xmax):
     plt.xlabel("Channel")
     plt.ylabel("Counts ")
     plt.legend()
-    plt.show()"""
+    plt.show()
     return -b/a
 
 def endpoint2(data, xmin, xmax):
@@ -280,7 +321,7 @@ def endpoint2(data, xmin, xmax):
     a, b = p1
     err = np.sqrt(np.diag(cov1))
 
-    """plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
     plt.plot(Channels[xmin: xmax], data[xmin: xmax], label='data', linestyle='None', marker='o')
     plt.plot(x, over_log(x, *p1), 'r-', label='a/(log(x)) + b')
     plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
@@ -289,7 +330,7 @@ def endpoint2(data, xmin, xmax):
     plt.xlabel("Channel")
     plt.ylabel("Counts")
     plt.legend()
-    plt.show()"""
+    plt.show()
     return np.exp(-a/b)
 
 ### Colocar os endpoints numa tabela
@@ -306,16 +347,23 @@ table.add_row(["TT15", endpoint(TT15_Chn0, 550, 800), endpoint2(TT15_Chn0, 550, 
 table.add_row(["TT16", endpoint(TT16_Chn0, 550, 800), endpoint2(TT16_Chn0, 550, 800), endpoint(TT16_Chn1, 550, 800), endpoint2(TT16_Chn1, 550, 800)])
 
 print ("Endpoint dos espetros de B [Chn]:")
-print (table)
+print (table)"""
+
 print("\n")
+
 ################################################################################
 ######################### QUANTIFICATION #######################################
 ################################################################################
+print ("Análise Quantitativa:")
+
 def Integral(data, time, threshold):
     res = 0
     for i in range(threshold, len(data)):
         res += data[i]
     return res / time
+
+###### Define the thresholds
+thresholds = [170, 170, 170, 170, 170, 170, 95, 95, 95, 95]
 
 Integral_Chn0, Integral_Chn1 = [], []
 for i in range(len(Data_Chn0)):
@@ -326,5 +374,3 @@ for i in range(len(Data_Chn0)):
 
 print ("Integrais Chn0:", Integral_Chn0)
 print ("Integrais Chn1:", Integral_Chn1)
-
-
