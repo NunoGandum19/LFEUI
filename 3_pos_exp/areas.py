@@ -6,6 +6,29 @@ from reader import reader, plotter, plotter_3
 
 ############################ READ DATA ################################
 
+"""info:
+TT4 - primeira calibração com motor
+TT5 - primeira calibração sem motor
+TT7 - vidro 4
+TT8 - vidro 3
+TT9 - vidro 3.2
+TT10 - não importa
+TT11 - vidro 1 com carga demasiado pequena
+TT12 - vidro 1
+MUDANCA DE ENERGIA
+TT13 - vidro 3.2
+TT14 - vidro 3.2 com diferente ganho
+TT15 - vidro 3 com diferente ganho
+TT16 - vidro 4 com diferente ganho
+TT18 - segunda calibração
+-----------------------------
+TT7-TT11 : carga 0.5microC
+TT11 : carga 5 microC
+TT12 : carga 20 microC
+TT13: carga 0.5 microC
+TT14, TT15, TT16: carga 20 micro C
+"""
+
 ### Read TT4 ###
 TT4_Chn0 = reader("../2_exp/TT_4/UNFILTERED/CH0@N6781_21198_Espectrum_TT_4_20231205_163512.n42", 0)
 TT4_Chn1 = reader("../2_exp/TT_4/UNFILTERED/CH1@N6781_21198_Espectrum_TT_4_20231205_163512.n42", 1)
@@ -76,55 +99,109 @@ TT18_Chn2 = reader("../2_exp/TT_18/UNFILTERED/CH2@N6781_21198_Espectrum_TT_18_20
 time_TTS = [1.58,0.81667,0.61667,0.25,5.61667,19.1,0.9667,4.0833,4.5333,4.18333]
 time_TTS = [x*60 for x in time_TTS] #in seconds
 
+######################### DEF AQUISITION CHARGE ####################################
+charge = [0.5,0.5,0.5,0.5,5,20,0.5,20,20,20] #in microCoulombs
+
 ######################### DEF THRESHOLDS ####################################
 
-threshold = []
+threshold = [95,95,95,95,95,95,160,160,160,160]
 
 ######################### PLOT DATA ####################################
-TTs_Chn0 = [TT7_Chn0, TT8_Chn0, TT9_Chn0, TT10_Chn0, TT11_Chn0, TT12_Chn0, TT13_Chn0, TT14_Chn0, TT15_Chn0, TT16_Chn0]
-TTs_Chn1 = [TT7_Chn1, TT8_Chn1, TT9_Chn1, TT10_Chn1, TT11_Chn1, TT12_Chn1, TT13_Chn1, TT14_Chn1, TT15_Chn1, TT16_Chn1]
-TTs_Chn2 = [TT7_Chn2, TT8_Chn2, TT9_Chn2, TT10_Chn2, TT11_Chn2, TT12_Chn2, TT13_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2]
+TTs_Chn0 = [TT7_Chn0, TT8_Chn0, TT9_Chn0, TT12_Chn0, TT14_Chn0, TT15_Chn0, TT16_Chn0]
+TTs_Chn1 = [TT7_Chn1, TT8_Chn1, TT9_Chn1, TT12_Chn1, TT14_Chn1, TT15_Chn1, TT16_Chn1]
+TTs_Chn2 = [TT7_Chn2, TT8_Chn2, TT9_Chn2, TT12_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2]
 TTs_names = ["TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", "TT14", "TT15", "TT16"]
 
-
 ######################### CUT INITIAL NOISE ####################################
-TTs_Chn0 = [x[21:] for x in TTs_Chn0]
-TTs_Chn1 = [x[21:] for x in TTs_Chn1]
-TTs_Chn2 = [x[21:] for x in TTs_Chn2]
-
+TTs_Chn0_cut = [x[threshold[i]:] for i, x in enumerate(TTs_Chn0)]
+TTs_Chn1_cut = [x[threshold[i]:] for i, x in enumerate(TTs_Chn1)]
+TTs_Chn2_cut = [x[threshold[i]:] for i, x in enumerate(TTs_Chn2)]
+    
 ######################### PLOT CUT DATA ####################################
-for i in range(len(TTs_Chn0)):
-    plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])
+# for i in range(len(TTs_Chn0)):
+#     plotter_3(TTs_Chn0[i], TTs_Chn1[i], TTs_Chn2[i], TTs_names[i])
 
 ######################### TRANSFORM IN NP ARRAYS ####################################
-TTs_Chn0 = [np.array(x) for x in TTs_Chn0]
-TTs_Chn1 = [np.array(x) for x in TTs_Chn1]
-TTs_Chn2 = [np.array(x) for x in TTs_Chn2]
-
-# def sum_chn (TTs_Chn, threshold: list, times: list):
-#     for i in range(len(TTs_Chn)):
-#         plotter(TTs_Chn[i], TTs_names[i])
-#         counts_chn = 0
-#         list_chn = []
-#         for j in range(threshold[i], len(TTs_Chn0[i])):
-#             counts_chn += TTs_Chn0[i][j]
-#             counts_chn = counts_chn / times[i]
-#         print('sai')
-#         list_chn.append(counts_chn)
-#     return list_chn
+TTs_Chn0 = [np.array(x) for x in TTs_Chn0_cut]
+TTs_Chn1 = [np.array(x) for x in TTs_Chn1_cut]
+TTs_Chn2 = [np.array(x) for x in TTs_Chn2_cut]
 
 ######################### CALCULATE INTEGRAL ####################################
-list_chn0 = [np.sum(x) / time_TTS[i] for i, x in enumerate(TTs_Chn0)]
-list_chn1 = [np.sum(x) / time_TTS[i] for i, x in enumerate(TTs_Chn1)]
-list_chn2 = [np.sum(x) / time_TTS[i] for i, x in enumerate(TTs_Chn2)]
+integral_chn0 = [np.sum(x) / charge[i] for i, x in enumerate(TTs_Chn0)]
+integral_chn1 = [np.sum(x) / charge[i] for i, x in enumerate(TTs_Chn1)]
+integral_chn2 = [np.sum(x) / charge[i] for i, x in enumerate(TTs_Chn2)]
 
 ######################### PRINT INTEGRAL ####################################
-print("Integral chn0: ", list_chn0)
+print("Integral chn0: ", integral_chn0)
 print('')
-print("Integral chn1: ", list_chn1)
+print("Integral chn1: ", integral_chn1)
 print('')
-print("Integral chn2: ", list_chn2)
+print("Integral chn2: ", integral_chn2)
 
-    
-        
+######################### CALCULATE PERCENTAGE   ####################################
+p_SiO2_mass, p_B2O3_mass, p_Al2O3_mass, p_K2O_mass, p_SnO_mass, p_Br_mass = 0.4690, 0.3126, 0.0618, 0.0971, 0.014, 0.0455
+
+M_Si, M_O, M_B, M_Al, M_K, M_Sn, M_Br = 28.09, 16, 10.81, 26.98, 39.1, 118.71, 79.9
+
+M_SiO2 = M_Si + 2*M_O
+M_B2O3 = 2*M_B + 3*M_O
+M_Al2O3 = M_Al + 3*M_O
+M_K2O = 2*M_K + M_O
+M_SnO = M_Sn + M_O
+M_Br = M_Br
+
+m_SiO2 = p_SiO2_mass / M_SiO2
+m_B2O3 = p_B2O3_mass / M_B2O3
+m_Al2O3 = p_Al2O3_mass / M_Al2O3
+m_K2O = p_K2O_mass / M_K2O
+m_SnO = p_SnO_mass / M_SnO
+m_Br = p_Br_mass / M_Br
+
+m_total = m_SiO2 + m_B2O3 + m_Al2O3 + m_K2O + m_SnO + m_Br
+
+p_B2O3 =  m_B2O3 / m_total
+
+percentagem_abs_vidro4 = p_B2O3 * 2 / 5
+
+
+######################### RELATIVE PERCENTAGES 1ST ENERGY ####################################
+print('------------------------------------------')
+print('')
+print('PRIMEIRA ENERGIA')
+percentagens_relativas0_e1 = [round(x/integral_chn0[0],4) for x in integral_chn0[:3]]
+percentagens_relativas1_e1 = [round(x/integral_chn1[0],4) for x in integral_chn1[:3]]
+percentagens_relativas2_e1 = [round(x/integral_chn2[0],4) for x in integral_chn2[:3]]
+print('')
+print("Percentagens relativas channel 0 (energia 1): ", percentagens_relativas0_e1)
+print("Percentagens relativas channel 1 (energia 1): ", percentagens_relativas1_e1)
+
+######################### ABSOLUT PERCENTAGES 1ST ENERGY ####################################
+percentagens_absolutas0_e1 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas0_e1]
+percentagens_absolutas1_e1 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas1_e1]
+percentagens_absolutas2_e1 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas2_e1]
+print('')
+print("Percentagens absolutas channel 0 (energia 1): ", percentagens_absolutas0_e1)
+print("Percentagens absolutas channel 1 (energia 1): ", percentagens_absolutas1_e1)
+
+######################### RELATIVE PERCENTAGES 2ND ENERGY ####################################
+print('------------------------------------------')
+print('')
+print('SEGUNDA ENERGIA')
+percentagens_relativas0_e2 = [round(x/integral_chn0[-1],4) for x in integral_chn0[7:]]
+percentagens_relativas1_e2 = [round(x/integral_chn1[-1],4) for x in integral_chn1[7:]]
+percentagens_relativas2_e2 = [round(x/integral_chn2[-1],4) for x in integral_chn2[7:]]
+print('')
+print("Percentagens relativas channel 0 (energia 2): ", percentagens_relativas0_e2)
+print("Percentagens relativas channel 1 (energia 2): ", percentagens_relativas1_e2)
+
+######################### ABSOLUT PERCENTAGES 2ND ENERGY ####################################
+percentagens_absolutas0_e2 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas0_e2]
+percentagens_absolutas1_e2 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas1_e2]
+percentagens_absolutas2_e2 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas2_e2]
+print('')
+print("Percentagens absolutas channel 0 (energia 2): ", percentagens_absolutas0_e2)
+print("Percentagens absolutas channel 1 (energia 2): ", percentagens_absolutas1_e2)
+
+
+######################### ORGANIZAR A INFORMAÇÃO PARA MOSTRAR POR AMOSTRA  ####################################
 
