@@ -371,11 +371,12 @@ y = A * np.exp(-0.5 * ((x - mean) / sigma)**2)
 plt.figure()
 plt.plot([1.2498, 1.2498], [0, 15])
 plt.plot(x, y)
-plt.grid()   
 plt.text(3/12 + 0.02, 21/24, r'$\alpha_0$', transform = plt.gca().transAxes, color='black', fontsize=13)
 plt.text(5/12, 1/6, r'$\alpha_1$', transform = plt.gca().transAxes, color='black', fontsize=13)
 plt.xlim(0, 3)
 plt.ylim(0, 120)
+plt.xlabel("Energy (MeV)")
+plt.grid()
 plt.show()
 
 
