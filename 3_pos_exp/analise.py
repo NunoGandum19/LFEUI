@@ -1,5 +1,5 @@
 """ Objetivos:
-    - Determinar se existe B nos materiais
+    - Determinar se existe B nos materiais 
     - Determinar a quantindade de B nos materiais
     - Verificar se existe Li na amostra que supostamente tinha Li
     - Determinar o endpoint do espectro de B (comparar com o Teórico)
@@ -113,6 +113,9 @@ TTs_names = ["TT4", "TT5", "TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", 
 plotter_2(TT5_Chn0, TT5_Chn1, "Calibration Spectrum - 1st Energy")
 plotter_2(TT18_Chn0, TT18_Chn1, "Calibration Spectrum - 2nd Energy")
 
+plotter_2(TT5_Chn0, TT18_Chn0, "Calibration Spectrum - Chn0", "1st Energy", "2nd Energy")
+plotter_2(TT5_Chn1, TT18_Chn1, "Calibration Spectrum - Chn1", "1st Energy", "2nd Energy")
+
 ##########################################################################
 ######################### DEFINITIONS ####################################
 ##########################################################################
@@ -155,16 +158,18 @@ bounds_TT5 = ([[75, 600, 0, 75, 650, 0, 75, 700, 0, 0], [125, 700, 15, 125, 750,
 
 m_TT5, b_TT5, delta_m_TT5, delta_b_TT5 = [], [], [], []
 for i in range(len(Detectors_TT5)):
+    #err_ctn = np.sqrt(Detectors_TT5[i])
+    #err_ctn[err_ctn == 0] = 1
     # Fit data
-    params1, covariance = curve_fit(gaussian3_sum, Channels, Detectors_TT5[i], p0=p0_TT5[i], bounds=bounds_TT5[i], method='trf')
+    params1, covariance = curve_fit(gaussian3_sum, Channels, Detectors_TT5[i],p0=p0_TT5[i], bounds=bounds_TT5[i], method='trf')
 
     A_Pu, mu_Pu, sigma_Pu, A_Am, mu_Am, sigma_Am, A_Cm, mu_Cm, sigma_Cm, C = params1
     errors = np.sqrt(np.diag(covariance))
 
-    """print (f"Pu: A = {A_Pu} +- {errors[0]}, mu = {mu_Pu} +- {errors[1]}, sigma = {sigma_Pu} +- {errors[2]}")
+    print (f"Pu: A = {A_Pu} +- {errors[0]}, mu = {mu_Pu} +- {errors[1]}, sigma = {sigma_Pu} +- {errors[2]}")
     print (f"Am: A = {A_Am} +- {errors[3]}, mu = {mu_Am} +- {errors[4]}, sigma = {sigma_Am} +- {errors[5]}")
     print (f"Cr: A = {A_Cm} +- {errors[6]}, mu = {mu_Cm} +- {errors[7]}, sigma = {sigma_Cm} +- {errors[8]}")
-    """
+    
     # Plot data
     plt.figure(figsize=(10, 6))
     plt.plot(Channels, TT5_Chn0, 'b-', label='data')
@@ -363,7 +368,7 @@ print("\n")
 ################################################################################
 ######################### QUANTIFICATION #######################################
 ################################################################################
-print ("Análise Quantitativa:")
+"""print ("Análise Quantitativa:")
 
 def Integral(data, time, threshold):
     res = 0
@@ -382,4 +387,4 @@ for i in range(len(Data_Chn0)):
     Integral_Chn1.append(integral1)
 
 print ("Integrais Chn0:", Integral_Chn0)
-print ("Integrais Chn1:", Integral_Chn1)
+print ("Integrais Chn1:", Integral_Chn1)"""

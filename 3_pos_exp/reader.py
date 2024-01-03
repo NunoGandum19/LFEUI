@@ -21,9 +21,9 @@ def plotter (data, title = "Spectrum Data"):
     plt.title(title)
     plt.show()
 
-def plotter_2(data1, data2, title = "Spectrum Data"):
-    plt.plot(data1, label = "Detetor_0")
-    plt.plot(data2, label = "Detetor_1")
+def plotter_2(data1, data2, title = "Spectrum Data", label1 = "Detector_0", label2 = "Detector_1"):
+    plt.plot(data1, label = label1)
+    plt.plot(data2, label = label2)
     plt.yscale("log")  # Set y-axis to logarithmic scale
     plt.xlabel("Channel")
     plt.ylabel("Counts (log scale)")

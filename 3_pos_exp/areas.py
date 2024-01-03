@@ -97,17 +97,17 @@ TTs_Chn0 = [np.array(x) for x in TTs_Chn0]
 TTs_Chn1 = [np.array(x) for x in TTs_Chn1]
 TTs_Chn2 = [np.array(x) for x in TTs_Chn2]
 
-# def sum_chn (TTs_Chn, threshold: list, times: list):
-#     for i in range(len(TTs_Chn)):
-#         plotter(TTs_Chn[i], TTs_names[i])
-#         counts_chn = 0
-#         list_chn = []
-#         for j in range(threshold[i], len(TTs_Chn0[i])):
-#             counts_chn += TTs_Chn0[i][j]
-#             counts_chn = counts_chn / times[i]
-#         print('sai')
-#         list_chn.append(counts_chn)
-#     return list_chn
+""" def sum_chn (TTs_Chn, threshold: list, times: list):
+     for i in range(len(TTs_Chn)):
+         plotter(TTs_Chn[i], TTs_names[i])
+         counts_chn = 0
+         list_chn = []
+         for j in range(threshold[i], len(TTs_Chn0[i])):
+             counts_chn += TTs_Chn0[i][j]
+             counts_chn = counts_chn / times[i]
+         print('sai')
+         list_chn.append(counts_chn)
+     return list_chn"""
 
 ######################### CALCULATE INTEGRAL ####################################
 list_chn0 = [np.sum(x) / time_TTS[i] for i, x in enumerate(TTs_Chn0)]
