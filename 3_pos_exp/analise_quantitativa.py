@@ -104,18 +104,26 @@ charge = [0.5,0.5,0.5,0.5,5,20,0.5,20,20,20] #in microCoulombs
 
 ######################### DEF THRESHOLDS ####################################
 
-threshold = [95,95,95,95,95,95,160,160,160,160]
+threshold_chn0 = [148,148,146,141,176,178,167]
+threshold_chn1 = [169,155,171,173,169,176,171]
+
+# threshold_chn0 = [156,156,156,156,156,156,156]
+# threshold_chn1 = [156,156,156,156,156,156,156]
 
 ######################### PLOT DATA ####################################
 TTs_Chn0 = [TT7_Chn0, TT8_Chn0, TT9_Chn0, TT12_Chn0, TT14_Chn0, TT15_Chn0, TT16_Chn0]
 TTs_Chn1 = [TT7_Chn1, TT8_Chn1, TT9_Chn1, TT12_Chn1, TT14_Chn1, TT15_Chn1, TT16_Chn1]
 TTs_Chn2 = [TT7_Chn2, TT8_Chn2, TT9_Chn2, TT12_Chn2, TT14_Chn2, TT15_Chn2, TT16_Chn2]
-TTs_names = ["TT7", "TT8", "TT9", "TT10", "TT11", "TT12", "TT13", "TT14", "TT15", "TT16"]
+TTs_names = ["TT7", "TT8", "TT9", "TT12", "TT14", "TT15", "TT16"]
+TTs_names = ['vidro 4', 'vidro 3', 'vidro 3.2', 'vidro 1', 'vidro 3.2 Energia 2', 'vidro 3 Energia 2', 'vidro 4 Energia 2']
+# isto é : [vidro 4, vidro 3, vidro 3.2, vidro 1, |MUDANCA ENERGIA| vidro 3.2, vidro 3, vidro 4]
+
+# for i in range(len(TTs_Chn0)): plotter(TTs_Chn0[i], TTs_names[i]+' Chn0')
+# for i in range(len(TTs_Chn1)): plotter(TTs_Chn1[i], TTs_names[i]+' Chn1')
 
 ######################### CUT INITIAL NOISE ####################################
-TTs_Chn0_cut = [x[threshold[i]:] for i, x in enumerate(TTs_Chn0)]
-TTs_Chn1_cut = [x[threshold[i]:] for i, x in enumerate(TTs_Chn1)]
-TTs_Chn2_cut = [x[threshold[i]:] for i, x in enumerate(TTs_Chn2)]
+TTs_Chn0_cut = [x[threshold_chn0[i]:] for i, x in enumerate(TTs_Chn0)]
+TTs_Chn1_cut = [x[threshold_chn1[i]:] for i, x in enumerate(TTs_Chn1)]
     
 ######################### PLOT CUT DATA ####################################
 # for i in range(len(TTs_Chn0)):
@@ -124,22 +132,20 @@ TTs_Chn2_cut = [x[threshold[i]:] for i, x in enumerate(TTs_Chn2)]
 ######################### TRANSFORM IN NP ARRAYS ####################################
 TTs_Chn0 = [np.array(x) for x in TTs_Chn0_cut]
 TTs_Chn1 = [np.array(x) for x in TTs_Chn1_cut]
-TTs_Chn2 = [np.array(x) for x in TTs_Chn2_cut]
 
 ######################### CALCULATE INTEGRAL ####################################
 integral_chn0 = [np.sum(x) / charge[i] for i, x in enumerate(TTs_Chn0)]
 integral_chn1 = [np.sum(x) / charge[i] for i, x in enumerate(TTs_Chn1)]
-integral_chn2 = [np.sum(x) / charge[i] for i, x in enumerate(TTs_Chn2)]
 
 ######################### PRINT INTEGRAL ####################################
 print("Integral chn0: ", integral_chn0)
 print('')
 print("Integral chn1: ", integral_chn1)
-print('')
-print("Integral chn2: ", integral_chn2)
 
 ######################### CALCULATE PERCENTAGE   ####################################
 p_SiO2_mass, p_B2O3_mass, p_Al2O3_mass, p_K2O_mass, p_SnO_mass, p_Br_mass = 0.4690, 0.3126, 0.0618, 0.0971, 0.014, 0.0455
+
+percentagens_massicas = [0.4690, 0.3126, 0.0618, 0.0971, 0.014, 0.0455]
 
 M_Si, M_O, M_B, M_Al, M_K, M_Sn, M_Br = 28.09, 16, 10.81, 26.98, 39.1, 118.71, 79.9
 
@@ -157,51 +163,108 @@ m_K2O = p_K2O_mass / M_K2O
 m_SnO = p_SnO_mass / M_SnO
 m_Br = p_Br_mass / M_Br
 
-m_total = m_SiO2 + m_B2O3 + m_Al2O3 + m_K2O + m_SnO + m_Br
+massas = np.array([m_SiO2, m_B2O3, m_Al2O3, m_K2O, m_SnO, m_Br])
+numero_atomos = np.array([3, 5, 5, 3, 2, 1])
+m_total = np.sum(massas)
 
-p_B2O3 =  m_B2O3 / m_total
+percentagens_abs = [x/m_total for x in massas]
 
-percentagem_abs_vidro4 = p_B2O3 * 2 / 5
+print('------------------------------------------')
+print('Percentagem óxido boro: ', percentagens_abs[1])
+
+percentagem_abs_vidro4 = percentagens_abs[1]/np.sum(numero_atomos*percentagens_abs)
 
 
 ######################### RELATIVE PERCENTAGES 1ST ENERGY ####################################
-print('------------------------------------------')
-print('')
-print('PRIMEIRA ENERGIA')
-percentagens_relativas0_e1 = [round(x/integral_chn0[0],4) for x in integral_chn0[:3]]
-percentagens_relativas1_e1 = [round(x/integral_chn1[0],4) for x in integral_chn1[:3]]
-percentagens_relativas2_e1 = [round(x/integral_chn2[0],4) for x in integral_chn2[:3]]
-print('')
-print("Percentagens relativas channel 0 (energia 1): ", percentagens_relativas0_e1)
-print("Percentagens relativas channel 1 (energia 1): ", percentagens_relativas1_e1)
+# print('------------------------------------------')
+# print('')
+# print('PRIMEIRA ENERGIA')
+percentagens_relativas0_e1 = [round(x/integral_chn0[0],4) for x in integral_chn0[:4]]
+percentagens_relativas1_e1 = [round(x/integral_chn1[0],4) for x in integral_chn1[:4]]
+# print('As energias um sao: ', TTs_names[:4])
+# print('')
+# print("Percentagens relativas channel 0 (energia 1): ", percentagens_relativas0_e1)
+# print("Percentagens relativas channel 1 (energia 1): ", percentagens_relativas1_e1)
 
 ######################### ABSOLUT PERCENTAGES 1ST ENERGY ####################################
 percentagens_absolutas0_e1 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas0_e1]
 percentagens_absolutas1_e1 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas1_e1]
-percentagens_absolutas2_e1 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas2_e1]
-print('')
-print("Percentagens absolutas channel 0 (energia 1): ", percentagens_absolutas0_e1)
-print("Percentagens absolutas channel 1 (energia 1): ", percentagens_absolutas1_e1)
+# print('')
+# print("Percentagens absolutas channel 0 (energia 1): ", percentagens_absolutas0_e1)
+# print("Percentagens absolutas channel 1 (energia 1): ", percentagens_absolutas1_e1)
 
 ######################### RELATIVE PERCENTAGES 2ND ENERGY ####################################
-print('------------------------------------------')
-print('')
-print('SEGUNDA ENERGIA')
-percentagens_relativas0_e2 = [round(x/integral_chn0[-1],4) for x in integral_chn0[7:]]
-percentagens_relativas1_e2 = [round(x/integral_chn1[-1],4) for x in integral_chn1[7:]]
-percentagens_relativas2_e2 = [round(x/integral_chn2[-1],4) for x in integral_chn2[7:]]
-print('')
-print("Percentagens relativas channel 0 (energia 2): ", percentagens_relativas0_e2)
-print("Percentagens relativas channel 1 (energia 2): ", percentagens_relativas1_e2)
+# print('------------------------------------------')
+# print('')
+# print('SEGUNDA ENERGIA')
+percentagens_relativas0_e2 = [round(x/integral_chn0[-1],4) for x in integral_chn0[4:]]
+percentagens_relativas1_e2 = [round(x/integral_chn1[-1],4) for x in integral_chn1[4:]]
+# print('As energias dois sao: ', TTs_names[4:])
+# print('')
+# print("Percentagens relativas channel 0 (energia 2): ", percentagens_relativas0_e2)
+# print("Percentagens relativas channel 1 (energia 2): ", percentagens_relativas1_e2)
 
 ######################### ABSOLUT PERCENTAGES 2ND ENERGY ####################################
 percentagens_absolutas0_e2 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas0_e2]
 percentagens_absolutas1_e2 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas1_e2]
-percentagens_absolutas2_e2 = [round(x*percentagem_abs_vidro4,4) for x in percentagens_relativas2_e2]
-print('')
-print("Percentagens absolutas channel 0 (energia 2): ", percentagens_absolutas0_e2)
-print("Percentagens absolutas channel 1 (energia 2): ", percentagens_absolutas1_e2)
+# print('')
+# print("Percentagens absolutas channel 0 (energia 2): ", percentagens_absolutas0_e2)
+# print("Percentagens absolutas channel 1 (energia 2): ", percentagens_absolutas1_e2)
 
 
 ######################### ORGANIZAR A INFORMAÇÃO PARA MOSTRAR POR AMOSTRA  ####################################
+print('------------------------------------------')
+print('Vidro 4')
+print('')
+print('Percentagens Relativas')
+print('percentagens relativas channel 0 (energia 1): ', percentagens_relativas0_e1[0])
+print('percentagens relativas channel 1 (energia 1): ', percentagens_relativas1_e1[0])
+print('percentagens relativas channel 0 (energia 2): ', percentagens_relativas0_e2[-1])
+print('percentagens relativas channel 1 (energia 2): ', percentagens_relativas1_e2[-1])
+print('')
+print('Percentagens Absolutas')
+print('percentagens absolutas channel 0 (energia 1): ', percentagens_absolutas0_e1[0])
+print('percentagens absolutas channel 1 (energia 1): ', percentagens_absolutas1_e1[0])
+print('percentagens absolutas channel 0 (energia 2): ', percentagens_absolutas0_e2[-1])
+print('percentagens absolutas channel 1 (energia 2): ', percentagens_absolutas1_e2[-1])
 
+print('------------------------------------------')
+print('Vidro 3')
+print('')
+print('Percentagens Relativas')
+print('percentagens relativas channel 0 (energia 1): ', percentagens_relativas0_e1[1])
+print('percentagens relativas channel 1 (energia 1): ', percentagens_relativas1_e1[1])
+print('percentagens relativas channel 0 (energia 2): ', percentagens_relativas0_e2[-2])
+print('percentagens relativas channel 1 (energia 2): ', percentagens_relativas1_e2[-2])
+print('')
+print('Percentagens Absolutas')
+print('percentagens absolutas channel 0 (energia 1): ', percentagens_absolutas0_e1[1])
+print('percentagens absolutas channel 1 (energia 1): ', percentagens_absolutas1_e1[1])
+print('percentagens absolutas channel 0 (energia 2): ', percentagens_absolutas0_e2[-2])
+print('percentagens absolutas channel 1 (energia 2): ', percentagens_absolutas1_e2[-2])
+
+print('------------------------------------------')
+print('Vidro 3.2')
+print('')
+print('Percentagens Relativas')
+print('percentagens relativas channel 0 (energia 1): ', percentagens_relativas0_e1[2])
+print('percentagens relativas channel 1 (energia 1): ', percentagens_relativas1_e1[2])
+print('percentagens relativas channel 0 (energia 2): ', percentagens_relativas0_e2[-3])
+print('percentagens relativas channel 1 (energia 2): ', percentagens_relativas1_e2[-3])
+print('')
+print('Percentagens Absolutas')
+print('percentagens absolutas channel 0 (energia 1): ', percentagens_absolutas0_e1[2])
+print('percentagens absolutas channel 1 (energia 1): ', percentagens_absolutas1_e1[2])
+print('percentagens absolutas channel 0 (energia 2): ', percentagens_absolutas0_e2[-3])
+print('percentagens absolutas channel 1 (energia 2): ', percentagens_absolutas1_e2[-3])
+
+print('------------------------------------------')
+print('Vidro 1')
+print('')
+print('Percentagens Relativas')
+print('percentagens relativas channel 0 (energia 1): ', percentagens_relativas0_e1[3])
+print('percentagens relativas channel 1 (energia 1): ', percentagens_relativas1_e1[3])
+print('')
+print('Percentagens Absolutas')
+print('percentagens absolutas channel 0 (energia 1): ', percentagens_absolutas0_e1[3])
+print('percentagens absolutas channel 1 (energia 1): ', percentagens_absolutas1_e1[3])
