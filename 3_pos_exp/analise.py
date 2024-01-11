@@ -279,30 +279,73 @@ def Chn_to_E (Chn, m, b):
 ################################################################################
 print ("Análise Qualitativa:")
 
-data_titles = ["Vidro 4 - 1a Energia", "Vidro 3 - 1a Energia", "Vidro 3.2 - 1a Energia", "TT10", 
-               "Vidro 1 - 1a Energia (carga demasiado pequena)", "Vidro 1 - 1a Energia", 
-               "Vidro 3.2 - 2a Energia", "Vidro 3.2 - 2a Energia (novo ganho)", "Vidro 3 - 2a Energia (novo ganho)", "Vidro 4 - 2a Energia (novo ganho)"]
+data_titles = ["Sample 4 - 1st Energy", "Sample 3 - 1st Energy", "Sample 3.2 - 1st Energy", "TT10", 
+               "Sample 1 - 1st Energy (carga demasiado pequena)", "Sample 1 - 1st Energy", 
+               "Sample 3.2 - 2nd Energy", "Sample 3.2 - 2nd Energy (novo ganho)", "Sample 3 - 2nd Energy (novo ganho)", "Sample 4 - 2nd Energy (novo ganho)"]
 
 ###### Plot the data with Energy
-"""for i in range(len(Data_Chn0)):
+A = 100
+E_alpha_max = 5.55901117870905
+E_alpha_exc_mean = 3.646384715851524
+E_alpha_exc_max = 4.008593652291615
+E_alpha_exc_min = 3.2852100894369483
+sigma_alpha = 0.5*(E_alpha_exc_max-E_alpha_exc_min)
+E_Be_max = 1.249777607792777
+E_Be_exc_mean = 0.7979891346128403
+E_Be_exc_max = 0.8830546752368409
+E_Be_exc_min = 0.7134633083686994
+sigma_Be = (E_Be_exc_max - E_Be_exc_min)*2
+
+x_total = np.linspace(0, 8, 10000)
+y_total = A * np.exp(-0.5 * ((x_total - E_alpha_exc_mean) / sigma_alpha)**2
+            ) + 0.6 * A * np.exp(-0.5 * ((x_total - E_Be_exc_mean) / sigma_Be*0.8)**2
+            ) + 0.1 * A * np.exp(-0.5 * ((x_total - E_Be_max) / sigma_Be*1.5)**2
+            ) + 0.05 * A * np.exp(-0.5 * ((x_total - E_alpha_max) / 0.05)**2
+            ) + 80 * A * np.exp(-0.5 * ((x_total - 0.675) / 0.2)**2
+            ) + 2.5 * A * np.exp(-0.5 * ((x_total - 1.35) / 0.2)**2)
+
+A2 = 400
+E_alpha_max_2 = 5.581847526020704
+E_alpha_exc_mean_2 = 3.6781676020628846
+E_alpha_exc_min_2 = 3.318874395267524
+E_alpha_exc_max_2 = 4.038559836183839
+sigma_alpha_2 = 0.75*(E_alpha_exc_max_2 - E_alpha_exc_min_2)
+E_Be_max_2 = 1.2423567203049317
+E_Be_exc_mean_2 = 0.7950510878795073
+E_Be_exc_min_2 = 0.7114694290804404
+E_Be_exc_max_2 = 0.8792054880596525
+sigma_Be_2 = (E_Be_exc_max_2 - E_Be_exc_min_2)*2
+
+y_total_2 = A2 * np.exp(-0.5 * ((x_total - E_alpha_exc_mean_2) / sigma_alpha_2)**2
+            ) + 0.6 * A2 * np.exp(-0.5 * ((x_total - E_Be_exc_mean_2) / sigma_Be_2*0.8)**2
+            ) + 0.1 * A2 * np.exp(-0.5 * ((x_total - E_Be_max_2) / sigma_Be_2*1.5)**2
+            ) + 0.15 * A2 * np.exp(-0.5 * ((x_total - E_alpha_max_2) / 0.05)**2
+            ) + 5 * A2 * np.exp(-0.5 * ((x_total - 0.805) / 0.3)**2
+            ) + 2.5 * A2 * np.exp(-0.5 * ((x_total - 1.610) / 0.3)**2)
+
+
+for i in range(len(Data_Chn0)):
     E_Chn0, E_Chn1 = 0, 0
+    plt.figure(figsize=(10, 6))
     if i == 3:
         continue
     if i < 3:
         E_Chn0 = Chn_to_E(Channels, m_TT5[0], b_TT5[0])
         E_Chn1 = Chn_to_E(Channels, m_TT5[1], b_TT5[1])
+        plt.plot(x_total, y_total, linewidth=2, color = 'purple', label='Theoretical Spectrum')
     else:
         E_Chn0 = Chn_to_E(Channels, m_TT18[0], b_TT18[0])
         E_Chn1 = Chn_to_E(Channels, m_TT18[1], b_TT18[1])
-    plt.figure(figsize=(10, 6))
+        plt.plot(x_total, y_total_2, linewidth=2, color = 'purple', label='Theoretical Spectrum')
     plt.plot(E_Chn0, Data_Chn0[i], label='Chn0', color = 'dodgerblue')
     plt.plot(E_Chn1, Data_Chn1[i], label='Chn1', color = 'darkorange')
-    plt.yscale("log")  
+    #plt.yscale("log")
+    #plt.ylim(0, 10000)  
     plt.xlabel("Energy (MeV)")
-    plt.ylabel("Counts (log scale)")
+    plt.ylabel("Counts")
     plt.legend()
     plt.title(data_titles[i])
-    plt.show()"""
+    plt.show()
 
 ###### Endpoint dos espetros de B
 """def over_log(x, a, b):
@@ -362,23 +405,6 @@ table.add_row(["TT16", endpoint(TT16_Chn0, 550, 800), endpoint2(TT16_Chn0, 550, 
 print ("Endpoint dos espetros de B [Chn]:")
 print (table)"""
 print("\n")
-
-##### Build the spectrum (esboço)
-A, mean, sigma = 100, 0.7980, 0.0848
-x = np.linspace(mean - 3 * sigma, mean + 3 * sigma, 1000)
-y = A * np.exp(-0.5 * ((x - mean) / sigma)**2)
-
-plt.figure()
-plt.plot([1.2498, 1.2498], [0, 15])
-plt.plot(x, y)
-plt.text(3/12 + 0.02, 21/24, r'$\alpha_0$', transform = plt.gca().transAxes, color='black', fontsize=13)
-plt.text(5/12, 1/6, r'$\alpha_1$', transform = plt.gca().transAxes, color='black', fontsize=13)
-plt.xlim(0, 3)
-plt.ylim(0, 120)
-plt.xlabel("Energy (MeV)")
-plt.grid()
-plt.show()
-
 
 ################################################################################
 ######################### QUANTIFICATION #######################################
