@@ -123,12 +123,12 @@ y_total2 = A * np.exp(-0.5 * ((x_total - E_alpha_exc_mean) / sigma_alpha)**2
             ) + 5 * A * np.exp(-0.5 * ((x_total - 0.675) / 0.3)**2
             ) + 2.5 * A * np.exp(-0.5 * ((x_total - 1.35) / 0.3)**2)
     
-"""y_exp = A * np.exp(-0.5 * ((x_total - E_alpha_exc_mean) / sigma_alpha)**2
+y_exp = A * np.exp(-0.5 * ((x_total - E_alpha_exc_mean) / sigma_alpha)**2
             ) + 0.6 * A * np.exp(-0.5 * ((x_total - E_Be_exc_mean) / sigma_Be*0.8)**2
             ) + 0.1 * A * np.exp(-0.5 * ((x_total - E_Be_max) / sigma_Be*1.5)**2
             ) + 0.15 * A * np.exp(-0.5 * ((x_total - E_alpha_max) / 0.05)**2
-            ) + 5 * A * skewnorm(-2, 0.675, 0.5).pdf(x_total) + 2.5 * A * skewnorm(-2, 1.35, 0.5).pdf(x_total)
-"""
+            ) + 5 * A * skewnorm(-2, 0.675, 0.4).pdf(x_total) + 0.01 * A * skewnorm(-2, 1.35, 0.4).pdf(x_total)
+
 plt.figure()
 plt.plot([E_alpha_max, E_alpha_max], [0, 15], linewidth=2, color = 'dodgerblue')
 plt.plot(x1, y1, linewidth=2, color = 'dodgerblue', label='Primary Alpha')
@@ -137,7 +137,7 @@ plt.plot(x2, y3, linewidth=2, color = 'red', label='Secondary Alpha')
 plt.plot(x2, 5 * A * np.exp(-0.5 * ((x2 - 0.675) / 0.3)**2), linewidth=2, color = 'forestgreen', label='Backscattering')
 plt.plot(x2, 2.5 * A * np.exp(-0.5 * ((x2 - 1.35) / 0.3)**2), linewidth=2, color = 'darkorange', label='Pile Up')
 plt.plot(x_total, y_total2, linewidth=2, color = 'purple', label='Total spectrum')
-#plt.plot(x_total, y_exp, linewidth=2, color = 'black', label='Experimental spectrum')
+plt.plot(x_total, y_exp, linewidth=2, color = 'black', label='Experimental spectrum')
 plt.legend()
 plt.xlim(0, 8)
 plt.ylim(0, 750)

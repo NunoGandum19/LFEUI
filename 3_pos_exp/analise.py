@@ -29,6 +29,7 @@ import xml.etree.ElementTree as ET
 from reader import reader, plotter, plotter_2, plotter_3
 from sklearn.preprocessing import StandardScaler
 from prettytable import PrettyTable
+from scipy.stats import skewnorm
 #######################################################################
 ############################ READ DATA ################################
 #######################################################################
@@ -321,7 +322,13 @@ y_total_2 = A2 * np.exp(-0.5 * ((x_total - E_alpha_exc_mean_2) / sigma_alpha_2)*
             ) + 0.1 * A2 * np.exp(-0.5 * ((x_total - E_Be_max_2) / sigma_Be_2*1.5)**2
             ) + 0.15 * A2 * np.exp(-0.5 * ((x_total - E_alpha_max_2) / 0.05)**2
             ) + 5 * A2 * np.exp(-0.5 * ((x_total - 0.805) / 0.3)**2
-            ) + 2.5 * A2 * np.exp(-0.5 * ((x_total - 1.610) / 0.3)**2)
+            ) + 0.01 * A2 * np.exp(-0.5 * ((x_total - 1.610) / 0.3)**2)
+
+y_exp = A * np.exp(-0.5 * ((x_total - E_alpha_exc_mean) / sigma_alpha)**2
+            ) + 0.6 * A * np.exp(-0.5 * ((x_total - E_Be_exc_mean) / sigma_Be*0.8)**2
+            ) + 0.1 * A * np.exp(-0.5 * ((x_total - E_Be_max) / sigma_Be*1.5)**2
+            ) + 0.15 * A * np.exp(-0.5 * ((x_total - E_alpha_max) / 0.05)**2
+            ) + 5 * A * skewnorm(-2, 0.675, 0.4).pdf(x_total) + 0.01 * A * skewnorm(-2, 1.35, 0.4).pdf(x_total)
 
 
 for i in range(len(Data_Chn0)):
@@ -332,7 +339,7 @@ for i in range(len(Data_Chn0)):
     if i < 3:
         E_Chn0 = Chn_to_E(Channels, m_TT5[0], b_TT5[0])
         E_Chn1 = Chn_to_E(Channels, m_TT5[1], b_TT5[1])
-        plt.plot(x_total, y_total, linewidth=2, color = 'purple', label='Theoretical Spectrum')
+        plt.plot(x_total, y_exp, linewidth=2, color = 'purple', label='Theoretical Spectrum')
     else:
         E_Chn0 = Chn_to_E(Channels, m_TT18[0], b_TT18[0])
         E_Chn1 = Chn_to_E(Channels, m_TT18[1], b_TT18[1])
@@ -346,86 +353,3 @@ for i in range(len(Data_Chn0)):
     plt.legend()
     plt.title(data_titles[i])
     plt.show()
-
-###### Endpoint dos espetros de B
-"""def over_log(x, a, b):
-    return a/(np.log(x)) + b
-
-def endpoint(data, xmin, xmax):
-    x = np.linspace(xmin, xmax, len(data) * 100)
-        
-    p1, cov1 = curve_fit(linear, Channels[xmin:xmax], data[xmin:xmax])
-    a, b = p1
-    err = np.sqrt(np.diag(cov1))
-    
-    plt.figure(figsize=(10, 6))
-    plt.plot(Channels[xmin: xmax], data[xmin: xmax], label='data', linestyle='None', marker='o')
-    plt.plot(x, linear(x, *p1), 'r-', label='a*x + b')
-    plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
-    plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(err[1])}', transform = plt.gca().transAxes, color='black')
-    plt.grid()
-    plt.xlabel("Channel")
-    plt.ylabel("Counts ")
-    plt.legend()
-    plt.show()
-    return -b/a
-
-def endpoint2(data, xmin, xmax):
-    x = np.linspace(xmin, xmax, len(data) * 100)
-
-    p1, cov1 = curve_fit(over_log, Channels[xmin:xmax], data[xmin:xmax])
-    a, b = p1
-    err = np.sqrt(np.diag(cov1))
-
-    plt.figure(figsize=(10, 6))
-    plt.plot(Channels[xmin: xmax], data[xmin: xmax], label='data', linestyle='None', marker='o')
-    plt.plot(x, over_log(x, *p1), 'r-', label='a/(log(x)) + b')
-    plt.text(0.6, 0.90, f'a: {a:.4f} +- {"{:.4f}".format(err[0])}', transform = plt.gca().transAxes, color='black')
-    plt.text(0.6, 0.85, f'b: {b:.4f} +- {"{:.4f}".format(err[1])}', transform = plt.gca().transAxes, color='black')
-    plt.grid()
-    plt.xlabel("Channel")
-    plt.ylabel("Counts")
-    plt.legend()
-    plt.show()
-    return np.exp(-a/b)
-
-### Colocar os endpoints numa tabela
-table = PrettyTable()
-table.field_names = ["TT", "linear_Chn0", "1/log_Chn0", "linear_Chn1", "1/log_Chn1"]
-table.add_row(["TT7", endpoint(TT7_Chn0, 500, 600), endpoint2(TT7_Chn0, 500, 600), endpoint(TT7_Chn1, 500, 600), endpoint2(TT7_Chn1, 500, 600)])
-table.add_row(["TT8", endpoint(TT8_Chn0, 500, 600), endpoint2(TT8_Chn0, 500, 600), endpoint(TT8_Chn1, 500, 600), endpoint2(TT8_Chn1, 500, 600)])
-table.add_row(["TT9", endpoint(TT9_Chn0, 500, 600), endpoint2(TT9_Chn0, 500, 600), endpoint(TT9_Chn1, 500, 600), endpoint2(TT9_Chn1, 500, 600)])
-table.add_row(["TT12", endpoint(TT12_Chn0, 500, 600), endpoint2(TT12_Chn0, 500, 600), endpoint(TT12_Chn1, 500, 600), endpoint2(TT12_Chn1, 500, 600)])
-table.add_row(["-", "-", "-", "-", "-"])
-table.add_row(["TT13", endpoint(TT13_Chn0, 500, 650), endpoint2(TT13_Chn0, 500, 650), endpoint(TT13_Chn1, 500, 650), endpoint2(TT13_Chn1, 500, 650)])
-table.add_row(["TT14", endpoint(TT14_Chn0, 500, 650), endpoint2(TT14_Chn0, 500, 650), endpoint(TT14_Chn1, 500, 650), endpoint2(TT14_Chn1, 500, 650)])
-table.add_row(["TT15", endpoint(TT15_Chn0, 550, 800), endpoint2(TT15_Chn0, 550, 800), endpoint(TT15_Chn1, 550, 800), endpoint2(TT15_Chn1, 550, 800)])
-table.add_row(["TT16", endpoint(TT16_Chn0, 550, 800), endpoint2(TT16_Chn0, 550, 800), endpoint(TT16_Chn1, 550, 800), endpoint2(TT16_Chn1, 550, 800)])
-
-print ("Endpoint dos espetros de B [Chn]:")
-print (table)"""
-print("\n")
-
-################################################################################
-######################### QUANTIFICATION #######################################
-################################################################################
-"""print ("Análise Quantitativa:")
-
-def Integral(data, time, threshold):
-    res = 0
-    for i in range(threshold, len(data)):
-        res += data[i]
-    return res / time
-
-###### Define the thresholds
-thresholds = [170, 170, 170, 170, 170, 170, 95, 95, 95, 95]
-
-Integral_Chn0, Integral_Chn1 = [], []
-for i in range(len(Data_Chn0)):
-    integral0 = Integral(Data_Chn0[i], time_TTs[i], thresholds[i])
-    integral1 = Integral(Data_Chn1[i], time_TTs[i], thresholds[i])
-    Integral_Chn0.append(integral0)
-    Integral_Chn1.append(integral1)
-
-print ("Integrais Chn0:", Integral_Chn0)
-print ("Integrais Chn1:", Integral_Chn1)"""
